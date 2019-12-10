@@ -20,19 +20,14 @@ class CustomLightPopupCard extends LitElement {
   render() {
     var icon = this.config.icon;
     var entity = this.config.entity;
-    var scenes = this.config.scenes;
     var stateObj = this.hass.states[entity];
     var brightness = 0;
     if(stateObj.attributes.brightness) {
         brightness = stateObj.attributes.brightness /2.55;
     }
-    console.log(entity);
-    console.log(scenes);
-    console.log(icon);
-    console.log(brightness);
     
-    
-    console.log(stateObj);
+    //Scenes
+    var scenes = this.config.scenes;
  
     return html`
         <div class="icon ${stateObj.state === "off" ? '': 'on'}">
@@ -43,18 +38,32 @@ class CustomLightPopupCard extends LitElement {
             <input type="range" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
         </div>
         
-        <div class="scene-holder" *ngIf="entity.scenes && entity.scenes.length > 0">
-            <div *ngFor="let row of createRange(sceneRows)" class="scene-row">
-                <div class="scene" *ngFor="let scene of entity.scenes.slice(row*4,(row*4)+4); let i = index;" (click)="activateScene(scene.scene)">
-                    <span class="color" [ngStyle]="{'background-color': scene.color }"></span>
-                    <span class="name" *ngIf="scene.name">scene.name</span>
+        <div class="scene-holder">
+            ${scenes.map((scene) => html`
+                <div class="scene" data-scene="${scene.scene}">
+                    <span class="color" style="background-color: ${scene.color}"></span>
+                    ${scene.name ? html`<span class="name">${scene.name}</span>`: html``}
                 </div>
-            </div>
+            `)}
         </div>
     `;
   }
-
-  updated() { }
+  
+  updated() {
+    this.shadowRoot.querySelectorAll(".scene").forEach(scene => {
+        scene.addEventListener('click', event => {
+            this._activateScene(scene.dataset.scene)
+        })
+    });
+  }
+  
+  _createRange(amount) {
+    const items = [];
+    for (let i = 0; i < amount; i++) {
+      items.push(i);
+    }
+    return items;
+  }
   
   _setBrightness(state, value) {
     this.hass.callService("homeassistant", "turn_on", {
@@ -62,7 +71,13 @@ class CustomLightPopupCard extends LitElement {
         brightness: value * 2.55
     });
   }
-
+  
+  _activateScene(scene) {
+    this.hass.callService("scene", "turn_on", {
+        entity_id: scene
+    });
+  }
+  
   setConfig(config) {
     if (!config.entity) {
       throw new Error("You need to define an entity");
@@ -93,8 +108,8 @@ class CustomLightPopupCard extends LitElement {
             width:30px;
             height:30px;
         }
-        .icon.on {
-            color: #f7d959;
+        .icon.on ha-icon {
+            fill: #f7d959;
         }
         h4 {
             color: #FFF;
@@ -111,7 +126,7 @@ class CustomLightPopupCard extends LitElement {
         }
         
         .range-holder {
-            height: 402px;
+            height: 302px;
             overflow: hidden;
             padding-top: 102px;
             display: block;
@@ -160,14 +175,11 @@ class CustomLightPopupCard extends LitElement {
         }
     
         .scene-holder {
-            display:block;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
             margin-top:20px;
-            .scene-row {
-            display:block;
-            text-align:center;
-            padding-bottom:10px;
-            &:last-child {
-            padding:0;
         }
         .scene-holder .scene {
             display:inline-block;
