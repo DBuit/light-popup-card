@@ -38,6 +38,7 @@ class CustomLightPopupCard extends LitElement {
             <input type="range" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
         </div>
         
+        ${scenes && scenes.length > 0 ? html`
         <div class="scene-holder">
             ${scenes.map((scene) => html`
                 <div class="scene" data-scene="${scene.scene}">
@@ -45,7 +46,8 @@ class CustomLightPopupCard extends LitElement {
                     ${scene.name ? html`<span class="name">${scene.name}</span>`: html``}
                 </div>
             `)}
-        </div>
+        </div>` : html ``}
+        
     `;
   }
   
