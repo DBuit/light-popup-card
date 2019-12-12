@@ -63,6 +63,6 @@ popup_cards:
           color: "#8BCBDD"
 ```
 
-![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/master/screenshot.png)
-![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/master/screenshot-switch.png)
+![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png)
+![Screenshot of card with switch](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-switch.png)
 
