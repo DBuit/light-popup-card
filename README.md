@@ -2,6 +2,30 @@
 Popup lovelace card with brightness slider and optional scene selection.
 Can be used in combination with thomas loven browser_mod or custom pop-up card.
 
+
+## Configuration
+
+### Main Options
+
+| Name | Type | Default | Supported options | Description |
+| -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `entity` | string | **Required** | `light.kitchen` | Entity of the light |
+| `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
+| `scenes` | object | optional | `scenes:`  | define scenes that you can activate from the pop-up. |
+| `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
+
+To show scenes in the pop-up you add `scenes:` in the config of the card follow bij multiple scenes:
+```
+scenes:
+  - scene: scene.sceneone
+    color: "#FDCA64"
+    name: "first scene"
+  - scene: scene.scenetwo
+    color: "#FDCA64"
+```
+The name option within a scene is **optional**
+
+
 Example configuration in lovelace-ui.yaml
 ```
 popup_cards:
@@ -24,6 +48,8 @@ popup_cards:
     card:
       type: custom:custom-light-popup-card
       entity: light.beganegrond
+      icon: mdi:led-strip
+      scenesInARow: 2
       scenes:
         - scene: scene.ontspannen
           color: "#FDCA64"
@@ -33,10 +59,10 @@ popup_cards:
           name: helder
         - scene: scene.concentreren
           color: "#BBEEF3"
-          name: concentreren
         - scene: scene.energie
           color: "#8BCBDD"
-          name: energie
 ```
 
 ![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/master/screenshot.png)
+![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/master/screenshot-switch.png)
+
