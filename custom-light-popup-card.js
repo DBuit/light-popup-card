@@ -59,7 +59,7 @@ class CustomLightPopupCard extends LitElement {
         <div class="icon ${stateObj.state === "off" ? '': 'on'}">
             <ha-icon icon="${icon}" />
         </div>
-        ${ stateObj.attributes.supported_features > 0 ? html`
+        ${ stateObj.attributes.supported_features > 9 ? html`
             <h4 class="brightness">${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}</h4>
             <div class="range-holder">
                 <input type="range" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
@@ -113,7 +113,7 @@ class CustomLightPopupCard extends LitElement {
   }
   
   _switch(state) {
-      this.hass.callService("light", "toggle", {
+      this.hass.callService("homeassistant", "toggle", {
         entity_id: state.entity_id    
       });
   }
