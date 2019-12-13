@@ -13,6 +13,10 @@ Can be used in combination with thomas loven browser_mod or custom pop-up card.
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
 | `scenes` | object | optional | `scenes:`  | define scenes that you can activate from the pop-up. |
 | `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
+| `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
+| `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
+| `switchWidth` | string | optional | 150px | The width of the switch |
+| `switchHeight` | string | optional | 400px | The height of the switch |
 
 To show scenes in the pop-up you add `scenes:` in the config of the card follow bij multiple scenes:
 ```
@@ -50,6 +54,10 @@ popup_cards:
       entity: light.beganegrond
       icon: mdi:led-strip
       scenesInARow: 2
+      brightnessWidth: 150px
+      brightnessHeight: 400px
+      switchWidth: 150px
+      switchHeight: 400px
       scenes:
         - scene: scene.ontspannen
           color: "#FDCA64"
