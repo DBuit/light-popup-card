@@ -54,20 +54,25 @@ class CustomLightPopupCard extends LitElement {
         default:
             switchValue = 0;
     }
-  
+    
+    var brightnessWidth = this.config.brightnessWidth ? this.config.brightnessWidth : "150px";
+    var brightnessHeight = this.config.brightnessHeight ? this.config.brightnessHeight : "400px";
+    var switchWidth = this.config.switchWidth ? this.config.switchWidth : "380px";
+    var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
+        
     return html`
         <div class="icon ${stateObj.state === "off" ? '': 'on'}">
             <ha-icon icon="${icon}" />
         </div>
         ${ stateObj.attributes.supported_features > 9 ? html`
             <h4 class="brightness">${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}</h4>
-            <div class="range-holder">
-                <input type="range" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+            <div class="range-holder" style="--slider-height: ${brightnessHeight};">
+                <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
             </div>
         ` : html`
             <h4>${stateObj.state}</h4>
-            <div class="switch-holder">
-                <input type="range" value="0" min="0" max="1" .value="${switchValue}" @change=${e => this._switch(stateObj)}>
+            <div class="switch-holder" style="--switch-height: ${switchHeight};">
+                <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight};" value="0" min="0" max="1" .value="${switchValue}" @change=${e => this._switch(stateObj)}>
             </div>
         `}
         
@@ -134,7 +139,7 @@ class CustomLightPopupCard extends LitElement {
   getCardSize() {
     return this.config.entities.length + 1;
   }
-    
+  
   static get styles() {
     return css`
         :host {
@@ -172,19 +177,16 @@ class CustomLightPopupCard extends LitElement {
         }
         
         .range-holder {
-            height: 302px;
-            overflow: hidden;
-            padding-top: 102px;
+            height: var(--slider-height);
+            position:relative;
             display: block;
-            text-align: center;
         }
         .range-holder input[type="range"] {
             outline: 0;
             border: 0;
             border-radius: 25px;
-            width: 400px;
-            max-width: 100%;
-            margin: 24px 0;
+            width: var(--slider-height);
+            margin: 0;
             transition: box-shadow 0.2s ease-in-out;
             -webkit-transform:rotate(270deg);
             -moz-transform:rotate(270deg);
@@ -192,12 +194,15 @@ class CustomLightPopupCard extends LitElement {
             -ms-transform:rotate(270deg);
             transform:rotate(270deg);
             overflow: hidden;
-            height: 150px;
+            height: var(--slider-width);
             -webkit-appearance: none;
             background-color: #ddd;
+            position: absolute;
+            top: calc(50% - (var(--slider-width) / 2));
+            right: calc(50% - (var(--slider-height) / 2));
         }
         .range-holder input[type="range"]::-webkit-slider-runnable-track {
-            height: 150px;
+            height: var(--slider-width);
             -webkit-appearance: none;
             color: #ddd;
             margin-top: -1px;
@@ -217,22 +222,19 @@ class CustomLightPopupCard extends LitElement {
             border-radius: 0;
             transition: box-shadow 0.2s ease-in-out;
             position: relative;
-            top: 35px;
+            top: calc((var(--slider-width) - 80px) / 2);
         }
         .switch-holder {
-            height: 302px;
-            overflow: hidden;
-            padding-top: 122px;
+            height: var(--switch-height);
+            position:relative;
             display: block;
-            text-align: center;
         }
         .switch-holder input[type="range"] {
             outline: 0;
             border: 0;
             border-radius: 25px;
-            width: 380px;
-            max-width: 100%;
-            margin: 24px 0;
+            width: calc(var(--switch-height) - 20px);
+            margin: 0;
             transition: box-shadow 0.2s ease-in-out;
             -webkit-transform: rotate(270deg);
             -moz-transform: rotate(270deg);
@@ -240,37 +242,34 @@ class CustomLightPopupCard extends LitElement {
             -ms-transform: rotate(270deg);
             transform: rotate(270deg);
             overflow: hidden;
-            height: 110px;
+            height: calc(var(--switch-width) - 20px);
             -webkit-appearance: none;
             background-color: #ddd;
             padding: 10px;
+            position: absolute;
+            top: calc(50% - (var(--switch-width) / 2));
+            right: calc(50% - (var(--switch-height) / 2));
         }
         .switch-holder input[type="range"]::-webkit-slider-runnable-track {
-          height: 150px;
-          -webkit-appearance: none;
-          color: #ddd;
-          margin-top: -1px;
-          transition: box-shadow 0.2s ease-in-out;
+            height: calc(var(--switch-width) - 20px);
+            -webkit-appearance: none;
+            color: #ddd;
+            margin-top: -1px;
+            transition: box-shadow 0.2s ease-in-out;
         }
         .switch-holder input[type="range"]::-webkit-slider-thumb {
-          width: 200px;
-          -webkit-appearance: none;
-          height: 110px;
-          cursor: ew-resize;
-          background: #fff;
-          transition: box-shadow 0.2s ease-in-out;
-          box-shadow: -340px 0 0 350px #ddd, inset 0 0 0 80px #FFF;
-          position: relative;
-          top: 20px;
-          border-radius: 25px;
+            width: calc(var(--switch-height) / 2);
+            -webkit-appearance: none;
+            height: calc(var(--switch-width) - 20px);
+            cursor: ew-resize;
+            background: #fff;
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: -340px 0 0 350px #ddd, inset 0 0 0 80px #FFF;
+            position: relative;
+            top: 0;
+            border-radius: 25px;
         }
-        .switch-holder input[type="range"]::-webkit-slider-thumb::after {
-            content: "X";
-            position:absolute;
-            left:0;
-            top:0;
-            color:#FFF;
-        }
+        
         .scene-holder {
             display: flex;
             flex-direction: column;
