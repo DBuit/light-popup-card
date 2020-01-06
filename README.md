@@ -1,4 +1,4 @@
-# hass-custom-light-popup-card
+# Light popup card (homekit style)
 Popup lovelace card with brightness slider and optional scene selection.
 Can be used in combination with thomas loven browser_mod or custom pop-up card.
 
