@@ -5,14 +5,14 @@ Can be used in combination with thomas loven browser_mod or custom pop-up card.
 
 ## Configuration
 
-### Installation
+### Installation instructions
 
 Copy the .js file to your www directory and add the following to your ui-lovelace.yaml file:
 
-```
+```yaml
 resources:
-  - url: /local/custom-light-popup-card.js?v=0.0.9996
-    type: module  
+  url: /local/custom-light-popup-card.js
+  type: module
 ```
 
 ### Main Options
