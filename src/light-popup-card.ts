@@ -1,10 +1,14 @@
+import { LitElement, html, css } from 'lit-element';
+import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
+import { closePopUp } from 'card-tools/src/popup';
 import {
-    LitElement,
-    html,
-    css
-} from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
-class CustomLightPopupCard extends LitElement {
-  
+  computeStateDisplay
+} from 'custom-card-helpers';
+class LightPopupCard extends LitElement {
+  config: any;
+  hass: any;
+  shadowRoot: any;
+
   static get properties() {
     return {
       hass: {},
@@ -31,7 +35,7 @@ class CustomLightPopupCard extends LitElement {
     //Scenes
     var scenes = this.config.scenes;
     if(scenes && scenes.length > 0) {
-        var sceneRows = [];
+        var sceneRows:any = [];
         var numberOfRows = Math.ceil(scenes.length / scenesInARow);
         for(var i=0;i<numberOfRows;i++) {
             sceneRows[i] = [];
@@ -59,51 +63,62 @@ class CustomLightPopupCard extends LitElement {
     var brightnessHeight = this.config.brightnessHeight ? this.config.brightnessHeight : "400px";
     var switchWidth = this.config.switchWidth ? this.config.switchWidth : "380px";
     var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
+
+    var color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
         
     return html`
-        <div class="icon ${stateObj.state === "off" ? '': 'on'}">
-            <ha-icon icon="${icon}" />
-        </div>
-        ${ stateObj.attributes.supported_features > 9 ? html`
-            <h4 class="brightness">${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}</h4>
-            <div class="range-holder" style="--slider-height: ${brightnessHeight};">
-                <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
-            </div>
-        ` : html`
-            <h4>${stateObj.state}</h4>
-            <div class="switch-holder" style="--switch-height: ${switchHeight};">
-                <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight};" value="0" min="0" max="1" .value="${switchValue}" @change=${e => this._switch(stateObj)}>
-            </div>
-        `}
-        
-        ${scenes && scenes.length > 0 ? html`
-        <div class="scene-holder">
-            
-            ${sceneRows.map((sceneRow) => html`
-                <div class="scene-row">
-                ${sceneRow.map((scene) => html`
-                    <div class="scene" data-scene="${scene.scene}">
-                        <span class="color" style="background-color: ${scene.color}"></span>
-                        ${scene.name ? html`<span class="name">${scene.name}</span>`: html``}
-                    </div>
-                `)}
+        <div class="popup-wrapper" @click="${e => this._close(e)}">
+            <div class="popup-inner">
+                <div class="icon">
+                    <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
-            `)}
-        </div>` : html ``}
-        
+                ${ stateObj.attributes.supported_features > 9 ? html`
+                    <h4 class="${stateObj.state === "off" ? '' : 'brightness'}">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : Math.round(stateObj.attributes.brightness/2.55)}</h4>
+                    <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
+                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                    </div>
+                ` : html`
+                    <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
+                    <div class="switch-holder" style="--switch-height: ${switchHeight};--switch-width: ${switchWidth};">
+                        <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight};" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
+                    </div>
+                `}
+
+                ${scenes && scenes.length > 0 ? html`
+                <div class="scene-holder">
+
+                    ${sceneRows.map((sceneRow) => html`
+                        <div class="scene-row">
+                        ${sceneRow.map((scene) => html`
+                            <div class="scene" data-scene="${scene.scene}">
+                                <span class="color" style="background-color: ${scene.color}"></span>
+                                ${scene.name ? html`<span class="name">${scene.name}</span>`: html``}
+                            </div>
+                        `)}
+                        </div>
+                    `)}
+                </div>` : html ``}
+            </div>
+        </div>
     `;
   }
   
   updated() {
     this.shadowRoot.querySelectorAll(".scene").forEach(scene => {
-        scene.addEventListener('click', event => {
+        scene.addEventListener('click', () => {
             this._activateScene(scene.dataset.scene)
         })
     });
   }
-  
+
+  _close(event) {
+    if(event && event.target.className === 'popup-inner') {
+        closePopUp();
+    }
+  }
+
   _createRange(amount) {
-    const items = [];
+    const items: any = [];
     for (let i = 0; i < amount; i++) {
       items.push(i);
     }
@@ -128,6 +143,60 @@ class CustomLightPopupCard extends LitElement {
         entity_id: scene
     });
   }
+
+  _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
+      var color = this.config.default_color ? this.config.default_color : undefined;
+      if (stateObj) {
+        if (stateObj.attributes.rgb_color) {
+          color = `rgb(${stateObj.attributes.rgb_color.join(',')})`;
+          if (stateObj.attributes.brightness) {
+            color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
+          }
+        } else if (useTemperature && stateObj.attributes.color_temp && stateObj.attributes.min_mireds && stateObj.attributes.max_mireds) {
+          color = this._getLightColorBasedOnTemperature(stateObj.attributes.color_temp, stateObj.attributes.min_mireds, stateObj.attributes.max_mireds);
+          if (stateObj.attributes.brightness) {
+            color = this._applyBrightnessToColor(color, (stateObj.attributes.brightness + 245) / 5);
+          }
+        } else if (useBrightness && stateObj.attributes.brightness) {
+          color = this._applyBrightnessToColor(this._getDefaultColorForState(), (stateObj.attributes.brightness + 245) / 5);
+        } else {
+          color = this._getDefaultColorForState();
+        }
+      }
+      return color;
+    }
+
+    _applyBrightnessToColor(color, brightness) {
+        const colorObj = new TinyColor(this._getColorFromVariable(color));
+        if (colorObj.isValid) {
+          const validColor = colorObj.mix('black', 100 - brightness).toString();
+          if (validColor) return validColor;
+        }
+        return color;
+    }
+
+    _getLightColorBasedOnTemperature(current, min, max) {
+        const high = new TinyColor('rgb(255, 160, 0)'); // orange-ish
+        const low = new TinyColor('rgb(166, 209, 255)'); // blue-ish
+        const middle = new TinyColor('white');
+        const mixAmount = (current - min) / (max - min) * 100;
+        if (mixAmount < 50) {
+          return tinycolor(low).mix(middle, mixAmount * 2).toRgbString();
+        } else {
+          return tinycolor(middle).mix(high, (mixAmount - 50) * 2).toRgbString();
+        }
+    }
+
+    _getDefaultColorForState() {
+      return this.config.color_on ? this.config.color_on: '#f7d959';
+    }
+
+    _getColorFromVariable(color: string): string {
+      if (typeof color !== "undefined" && color.substring(0, 3) === 'var') {
+        return window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim();
+      }
+      return color;
+    }
   
   setConfig(config) {
     if (!config.entity) {
@@ -145,8 +214,22 @@ class CustomLightPopupCard extends LitElement {
         :host {
             background-color:#000!important;
         }
+        .popup-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .popup-inner {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
         .icon {
-            margin: 0 auto;
             text-align:center;
             display:block;
             height: 40px;
@@ -178,13 +261,14 @@ class CustomLightPopupCard extends LitElement {
         
         .range-holder {
             height: var(--slider-height);
+            width: var(--slider-width);
             position:relative;
             display: block;
         }
         .range-holder input[type="range"] {
             outline: 0;
             border: 0;
-            border-radius: 25px;
+            border-radius: 12px;
             width: var(--slider-height);
             margin: 0;
             transition: box-shadow 0.2s ease-in-out;
@@ -209,7 +293,7 @@ class CustomLightPopupCard extends LitElement {
             transition: box-shadow 0.2s ease-in-out;
         }
         .range-holder input[type="range"]::-webkit-slider-thumb {
-            width: 25px;
+            width: 12px;
             border-right:10px solid #FFF;
             border-left:10px solid #FFF;
             border-top:20px solid #FFF;
@@ -226,13 +310,14 @@ class CustomLightPopupCard extends LitElement {
         }
         .switch-holder {
             height: var(--switch-height);
+            width: var(--switch-width);
             position:relative;
             display: block;
         }
         .switch-holder input[type="range"] {
             outline: 0;
             border: 0;
-            border-radius: 25px;
+            border-radius: 12px;
             width: calc(var(--switch-height) - 20px);
             margin: 0;
             transition: box-shadow 0.2s ease-in-out;
@@ -264,10 +349,11 @@ class CustomLightPopupCard extends LitElement {
             cursor: ew-resize;
             background: #fff;
             transition: box-shadow 0.2s ease-in-out;
-            box-shadow: -340px 0 0 350px #ddd, inset 0 0 0 80px #FFF;
+            border: none;
+            box-shadow: -1px 1px 20px 0px rgba(0,0,0,0.75);
             position: relative;
             top: 0;
-            border-radius: 25px;
+            border-radius: 12px;
         }
         
         .scene-holder {
@@ -310,4 +396,4 @@ class CustomLightPopupCard extends LitElement {
   
 }
 
-customElements.define('custom-light-popup-card', CustomLightPopupCard);
+customElements.define('light-popup-card', LightPopupCard);
