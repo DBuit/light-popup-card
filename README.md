@@ -7,11 +7,22 @@ Can be used in combination with thomas loven browser_mod or custom pop-up card o
 
 ### Installation instructions
 
-Copy the .js file to your www directory and add the following to your ui-lovelace.yaml file:
+**HACS installation:**
+Go to the hacs store and use the repo url `https://github.com/DBuit/light-popup-card` and add this as a custom repository under settings.
+
+Add the following to your ui-lovelace.yaml:
+```yaml
+resources:
+  url: /community_plugin/light-popup-card/light-popup-card.js
+  type: module
+```
+
+**Manual installation:**
+Copy the .js file from the dist directory to your www directory and add the following to your ui-lovelace.yaml file:
 
 ```yaml
 resources:
-  url: /local/custom-light-popup-card.js
+  url: /local/light-popup-card.js
   type: module
 ```
 
@@ -60,7 +71,7 @@ popup_cards:
       margin: 0
       "--iron-icon-fill-color": "#FFF"
     card:
-      type: custom:custom-light-popup-card
+      type: custom:light-popup-card
       entity: light.beganegrond
       icon: mdi:led-strip
       scenesInARow: 2
