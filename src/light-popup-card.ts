@@ -385,7 +385,6 @@ class LightPopupCard extends LitElement {
         }
         .scene-holder .scene .name {
             width:50px;
-            overflow:hidden;
             display:block;
             color: #FFF;
             font-size: 9px;
