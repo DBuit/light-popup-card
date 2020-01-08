@@ -253,6 +253,7 @@ class LightPopupCard extends LitElement {
             text-align: center;
             font-size:20px;
             margin-top:0;
+            text-transform: capitalize;
         }
         h4.brightness:after {
             content: "%";
