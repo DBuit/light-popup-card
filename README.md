@@ -32,12 +32,15 @@ resources:
 | -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `entity` | string | **Required** | `light.kitchen` | Entity of the light |
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
+| `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
+| `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
 | `scenes` | object | optional | `scenes:`  | define scenes that you can activate from the pop-up. |
 | `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
 | `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
 | `switchWidth` | string | optional | 150px | The width of the switch |
 | `switchHeight` | string | optional | 400px | The height of the switch |
+' `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
 
 To show scenes in the pop-up you add `scenes:` in the config of the card follow bij multiple scenes:
 ```
