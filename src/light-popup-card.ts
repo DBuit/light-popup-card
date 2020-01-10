@@ -66,11 +66,10 @@ class LightPopupCard extends LitElement {
     var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
 
     var color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
-    console.log(fullscreen);
     return html`
-        ${fullscreen === true ? html`<div class="popup-wrapper">`:html``}
+      <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div class="popup-inner" @click="${e => this._close(e)}">
-                <div class="icon">
+                <div class="icon fullscreen">
                     <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
@@ -100,7 +99,7 @@ class LightPopupCard extends LitElement {
                     `)}
                 </div>` : html ``}
             </div>
-        ${fullscreen === true ? html`</div>`:html``}
+        </div>
     `;
   }
   
@@ -216,6 +215,7 @@ class LightPopupCard extends LitElement {
             background-color:#000!important;
         }
         .popup-wrapper {
+            margin-top:64px;
             position: absolute;
             top: 0;
             left: 0;
@@ -229,6 +229,9 @@ class LightPopupCard extends LitElement {
             align-items: center;
             justify-content: center;
             flex-direction: column;
+        }
+        .fullscreen {
+          margin-top:-64px;
         }
         .icon {
             text-align:center;
