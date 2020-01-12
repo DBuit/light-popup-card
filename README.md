@@ -7,11 +7,22 @@ Can be used in combination with thomas loven browser_mod or custom pop-up card o
 
 ### Installation instructions
 
-Copy the .js file to your www directory and add the following to your ui-lovelace.yaml file:
+**HACS installation:**
+Go to the hacs store and use the repo url `https://github.com/DBuit/light-popup-card` and add this as a custom repository under settings.
+
+Add the following to your ui-lovelace.yaml:
+```yaml
+resources:
+  url: /community_plugin/light-popup-card/light-popup-card.js
+  type: module
+```
+
+**Manual installation:**
+Copy the .js file from the dist directory to your www directory and add the following to your ui-lovelace.yaml file:
 
 ```yaml
 resources:
-  url: /local/custom-light-popup-card.js
+  url: /local/light-popup-card.js
   type: module
 ```
 
@@ -21,12 +32,15 @@ resources:
 | -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `entity` | string | **Required** | `light.kitchen` | Entity of the light |
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
+| `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
+| `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
 | `scenes` | object | optional | `scenes:`  | define scenes that you can activate from the pop-up. |
 | `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
 | `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
 | `switchWidth` | string | optional | 150px | The width of the switch |
 | `switchHeight` | string | optional | 400px | The height of the switch |
+' `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
 
 To show scenes in the pop-up you add `scenes:` in the config of the card follow bij multiple scenes:
 ```
@@ -60,7 +74,7 @@ popup_cards:
       margin: 0
       "--iron-icon-fill-color": "#FFF"
     card:
-      type: custom:custom-light-popup-card
+      type: custom:light-popup-card
       entity: light.beganegrond
       icon: mdi:led-strip
       scenesInARow: 2

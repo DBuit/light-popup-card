@@ -31,7 +31,8 @@ class LightPopupCard extends LitElement {
         brightness = stateObj.attributes.brightness /2.55;
     }
     var icon = this.config.icon ? this.config.icon : stateObj.attributes.icon ? stateObj.attributes.icon: 'mdi:lightbulb';
-    
+    var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
+    var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
     //Scenes
     var scenes = this.config.scenes;
     if(scenes && scenes.length > 0) {
@@ -58,29 +59,28 @@ class LightPopupCard extends LitElement {
         default:
             switchValue = 0;
     }
-    
+    var fullscreen = "fullscreen" in this.config ? this.config.fullscreen : true;
     var brightnessWidth = this.config.brightnessWidth ? this.config.brightnessWidth : "150px";
     var brightnessHeight = this.config.brightnessHeight ? this.config.brightnessHeight : "400px";
     var switchWidth = this.config.switchWidth ? this.config.switchWidth : "380px";
     var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
 
     var color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
-        
     return html`
-        <div class="popup-wrapper" @click="${e => this._close(e)}">
-            <div class="popup-inner">
-                <div class="icon">
+      <div class="${fullscreen === true ? 'popup-wrapper':''}">
+            <div class="popup-inner" @click="${e => this._close(e)}">
+                <div class="icon fullscreen">
                     <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
-                ${ stateObj.attributes.supported_features > 9 ? html`
+                ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
                     <h4 class="${stateObj.state === "off" ? '' : 'brightness'}">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : Math.round(stateObj.attributes.brightness/2.55)}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
-                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius}" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html`
                     <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
                     <div class="switch-holder" style="--switch-height: ${switchHeight};--switch-width: ${switchWidth};">
-                        <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight};" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
+                        <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight}; --slider-border-radius: ${borderRadius}" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
                     </div>
                 `}
 
@@ -215,6 +215,7 @@ class LightPopupCard extends LitElement {
             background-color:#000!important;
         }
         .popup-wrapper {
+            margin-top:64px;
             position: absolute;
             top: 0;
             left: 0;
@@ -228,6 +229,9 @@ class LightPopupCard extends LitElement {
             align-items: center;
             justify-content: center;
             flex-direction: column;
+        }
+        .fullscreen {
+          margin-top:-64px;
         }
         .icon {
             text-align:center;
@@ -253,6 +257,7 @@ class LightPopupCard extends LitElement {
             text-align: center;
             font-size:20px;
             margin-top:0;
+            text-transform: capitalize;
         }
         h4.brightness:after {
             content: "%";
@@ -268,7 +273,7 @@ class LightPopupCard extends LitElement {
         .range-holder input[type="range"] {
             outline: 0;
             border: 0;
-            border-radius: 12px;
+            border-radius: var(--slider-border-radius, 12px);
             width: var(--slider-height);
             margin: 0;
             transition: box-shadow 0.2s ease-in-out;
@@ -293,7 +298,7 @@ class LightPopupCard extends LitElement {
             transition: box-shadow 0.2s ease-in-out;
         }
         .range-holder input[type="range"]::-webkit-slider-thumb {
-            width: 12px;
+            width: 25px;
             border-right:10px solid #FFF;
             border-left:10px solid #FFF;
             border-top:20px solid #FFF;
@@ -317,7 +322,7 @@ class LightPopupCard extends LitElement {
         .switch-holder input[type="range"] {
             outline: 0;
             border: 0;
-            border-radius: 12px;
+            border-radius: var(--slider-border-radius, 12px);
             width: calc(var(--switch-height) - 20px);
             margin: 0;
             transition: box-shadow 0.2s ease-in-out;
@@ -353,7 +358,7 @@ class LightPopupCard extends LitElement {
             box-shadow: -1px 1px 20px 0px rgba(0,0,0,0.75);
             position: relative;
             top: 0;
-            border-radius: 12px;
+            border-radius: var(--slider-border-radius, 12px);
         }
         
         .scene-holder {
@@ -385,7 +390,6 @@ class LightPopupCard extends LitElement {
         }
         .scene-holder .scene .name {
             width:50px;
-            overflow:hidden;
             display:block;
             color: #FFF;
             font-size: 9px;
