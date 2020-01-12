@@ -298,7 +298,7 @@ class LightPopupCard extends LitElement {
             transition: box-shadow 0.2s ease-in-out;
         }
         .range-holder input[type="range"]::-webkit-slider-thumb {
-            width: 12px;
+            width: 25px;
             border-right:10px solid #FFF;
             border-left:10px solid #FFF;
             border-top:20px solid #FFF;
