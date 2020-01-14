@@ -34,7 +34,7 @@ resources:
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
 | `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
 | `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
-| `scenes` | object | optional | `scenes:`  | define scenes that you can activate from the pop-up. |
+| `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
 | `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
 | `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
@@ -42,14 +42,20 @@ resources:
 | `switchHeight` | string | optional | 400px | The height of the switch |
 ' `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
 
-To show scenes in the pop-up you add `scenes:` in the config of the card follow bij multiple scenes:
+To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
+These actions are calling a service with specific service data. For people that used the `scenes:` before can still activate scenes look at the first example below.
 ```
-scenes:
-  - scene: scene.sceneone
-    color: "#FDCA64"
-    name: "first scene"
-  - scene: scene.scenetwo
-    color: "#FDCA64"
+actions:
+  - service: scene.turn_on
+    service_data:
+      entity_id: scene.energie
+    color: "#8BCBDD"
+    name: energie
+  - service: homeassistant.toggle
+    service_data:
+      entity_id: light.voordeurlicht
+    name: voordeur
+    icon: mdi:lightbulb
 ```
 The name option within a scene is **optional**
 
