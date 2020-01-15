@@ -143,11 +143,13 @@ class LightPopupCard extends LitElement {
   }
   
   _activateAction(e) {
-    const [row, item] = e.path[0].dataset.service.split("#", 2);
-    const action = this.actionRows[row-1][item-1];
-    console.log(action);
-    const [domain, service] = action.service.split(".", 2);
-    this.hass.callService(domain, service, action.service_data);
+    if(e.target.dataset && e.target.dataset.service) {
+      const [row, item] = e.target.dataset.service.split("#", 2);
+      const action = this.actionRows[row-1][item-1];
+      console.log(action);
+      const [domain, service] = action.service.split(".", 2);
+      this.hass.callService(domain, service, action.service_data);
+    }
   }
 
   _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
