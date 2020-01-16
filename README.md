@@ -87,22 +87,32 @@ popup_cards:
       type: custom:light-popup-card
       entity: light.beganegrond
       icon: mdi:led-strip
-      scenesInARow: 2
+      actionsInARow: 2
       brightnessWidth: 150px
       brightnessHeight: 400px
       switchWidth: 150px
       switchHeight: 400px
-      scenes:
-        - scene: scene.ontspannen
+      actions:
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.ontspannen
           color: "#FDCA64"
           name: ontspannen
-        - scene: scene.helder
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.helder
           color: "#FFE7C0"
           name: helder
-        - scene: scene.concentreren
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.concentreren
           color: "#BBEEF3"
-        - scene: scene.energie
+          name: concentreren
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.energie
           color: "#8BCBDD"
+          name: energie
 ```
 
 ![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png)
