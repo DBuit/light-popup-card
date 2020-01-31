@@ -9,6 +9,7 @@ class LightPopupCard extends LitElement {
   hass: any;
   shadowRoot: any;
   actionRows:any = [];
+  currentBrightness = 0;
 
   static get properties() {
     return {
@@ -67,8 +68,11 @@ class LightPopupCard extends LitElement {
     var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
 
     var color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
-
+    var sliderColor = "sliderColor" in this.config ? this.config.sliderColor : "#FFF";
+    var sliderColoredByLight = "sliderColoredByLight" in this.config ? this.config.sliderColoredByLight : false;
+    var sliderThumbColor = "sliderThumbColor" in this.config ? this.config.sliderThumbColor : "#ddd";
     var actionRowCount = 0;
+    this.currentBrightness = Math.round(stateObj.attributes.brightness/2.55);
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div class="popup-inner" @click="${e => this._close(e)}">
@@ -76,9 +80,9 @@ class LightPopupCard extends LitElement {
                     <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
-                    <h4 class="${stateObj.state === "off" ? '' : 'brightness'}">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : Math.round(stateObj.attributes.brightness/2.55)}</h4>
+                    <h4 id="brightnessValue" class="${stateObj.state === "off" ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
-                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius}" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html`
                     <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
@@ -112,7 +116,7 @@ class LightPopupCard extends LitElement {
         </div>
     `;
   }
-  
+
   updated() { }
 
   _close(event) {
@@ -128,7 +132,13 @@ class LightPopupCard extends LitElement {
     }
     return items;
   }
-  
+
+  _previewBrightness(value) {
+    this.currentBrightness = value;
+    const el = this.shadowRoot.getElementById("brightnessValue");
+    if(el) {el.dataset.value = value+"%";}
+  }
+
   _setBrightness(state, value) {
     this.hass.callService("homeassistant", "turn_on", {
         entity_id: state.entity_id,
@@ -268,7 +278,7 @@ class LightPopupCard extends LitElement {
             text-transform: capitalize;
         }
         h4.brightness:after {
-            content: "%";
+            content: attr(data-value);
             padding-left: 1px;
         }
         
@@ -307,15 +317,15 @@ class LightPopupCard extends LitElement {
         }
         .range-holder input[type="range"]::-webkit-slider-thumb {
             width: 25px;
-            border-right:10px solid #FFF;
-            border-left:10px solid #FFF;
-            border-top:20px solid #FFF;
-            border-bottom:20px solid #FFF;
+            border-right:10px solid var(--slider-color);
+            border-left:10px solid var(--slider-color);
+            border-top:20px solid var(--slider-color);
+            border-bottom:20px solid var(--slider-color);
             -webkit-appearance: none;
             height: 80px;
             cursor: ew-resize;
             background: #fff;
-            box-shadow: -350px 0 0 350px #FFF, inset 0 0 0 80px #ddd;
+            box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
             border-radius: 0;
             transition: box-shadow 0.2s ease-in-out;
             position: relative;

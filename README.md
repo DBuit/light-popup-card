@@ -44,7 +44,10 @@ resources:
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
 | `switchWidth` | string | optional | 150px | The width of the switch |
 | `switchHeight` | string | optional | 400px | The height of the switch |
-' `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
+| `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
+| `sliderColor` | string | optional | "#FFF" | The color of the slider |
+| `sliderColoredByLight` | boolean | optional | false | Let the color of the slider change based on the light color, this overwrites the sliderColor setting |
+| `sliderThumbColor` | string | optional | "#ddd" | The color of the line that you use to slide the slider  |
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
 These actions are calling a service with specific service data. For people that used the `scenes:` before can still activate scenes look at the first example below.
