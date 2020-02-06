@@ -10,6 +10,8 @@ class LightPopupCard extends LitElement {
   shadowRoot: any;
   actionRows:any = [];
   currentBrightness = 0;
+  settings = false;
+  settingsCustomCard = false;
 
   static get properties() {
     return {
@@ -71,18 +73,24 @@ class LightPopupCard extends LitElement {
     var sliderColor = "sliderColor" in this.config ? this.config.sliderColor : "#FFF";
     var sliderColoredByLight = "sliderColoredByLight" in this.config ? this.config.sliderColoredByLight : false;
     var sliderThumbColor = "sliderThumbColor" in this.config ? this.config.sliderThumbColor : "#ddd";
+    var sliderTrackColor = "sliderTrackColor" in this.config ? this.config.sliderTrackColor : "#ddd";
     var actionRowCount = 0;
     this.currentBrightness = Math.round(stateObj.attributes.brightness/2.55);
+    
+
+    this.settings = "settings" in this.config? true : false;
+    this.settingsCustomCard = "settingsCard" in this.config? true : false;
+
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
-            <div class="popup-inner" @click="${e => this._close(e)}">
+            <div id="popup" class="popup-inner" @click="${e => this._close(e)}">
                 <div class="icon fullscreen">
                     <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
                     <h4 id="brightnessValue" class="${stateObj.state === "off" ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
-                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html`
                     <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
@@ -112,17 +120,89 @@ class LightPopupCard extends LitElement {
                       `
                     })}
                 </div>` : html ``}
+                ${this.settings ? html`<button class="bottom-right-btn" @click="${() => this._openSettings()}">${this.config.settings.openButton ? this.config.settings.openButton:'Settings'}</button>`:html``}
             </div>
+            
+            ${this.settings ? html`
+            <div id="settings">
+              <div class="settings-inner" @click="${e => this._close(e)}">
+                ${this.settingsCustomCard ? html`
+                  <card-maker nohass data-card="${this.config.settingsCard.type}" data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}" data-style="${this.config.settingsCard.cardStyle ? this.config.settingsCard.cardStyle : ''}">
+                  </card-maker>
+                `:html`
+                    <more-info-controls
+                    .dialogElement=${null}
+                    .canConfigure=${false}
+                    .hass=${this.hass}
+                    .stateObj=${stateObj}
+                    style="--paper-slider-knob-color: white !important;
+                    --paper-slider-knob-start-color: white !important;
+                    --paper-slider-pin-color: white !important;
+                    --paper-slider-active-color: white !important;
+                    color: white !important;
+                    --primary-text-color: white !important;"
+                  ></more-info-controls>
+                `}
+                <button class="bottom-right-btn" @click="${() => this._closeSettings()}">${this.config.settings.closeButton ? this.config.settings.closeButton:'Close'}</button>
+              </div>
+            </div>
+            `:html``}
         </div>
     `;
   }
 
   updated() { }
 
+  firstUpdated() {
+    if(this.settings && !this.settingsCustomCard) {
+    const mic = this.shadowRoot.querySelector("more-info-controls").shadowRoot;
+    mic.removeChild(mic.querySelector("app-toolbar"));
+    } else if(this.settings && this.settingsCustomCard) {
+      this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
+        var card = {
+          type: customCard.dataset.card
+        };
+        card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
+        customCard.config = card;
+
+        let style = "";
+        if(customCard.dataset.style) {
+          style = customCard.dataset.style;
+        }
+
+        if(style != "") {
+          let itterations = 0;
+          let interval = setInterval(function () {
+            let el = customCard.children[0];
+            if(el) {
+              window.clearInterval(interval);
+
+              var styleElement = document.createElement('style');
+              styleElement.innerHTML = style;
+              el.shadowRoot.appendChild(styleElement);
+
+            } else if (++itterations === 10 ) {
+              window.clearInterval(interval);
+            }
+          }, 100);
+        }
+    });
+    }
+  }
+
   _close(event) {
-    if(event && event.target.className === 'popup-inner') {
+    if(event && (event.target.className === 'popup-inner' || event.target.className === 'settings-inner')) {
         closePopUp();
     }
+  }
+
+  _openSettings() {
+    this.shadowRoot.getElementById('popup').classList.add("off");
+    this.shadowRoot.getElementById('settings').classList.add("on");
+  }
+  _closeSettings() {
+    this.shadowRoot.getElementById('settings').classList.remove("on");
+    this.shadowRoot.getElementById('popup').classList.remove("off");
   }
 
   _createRange(amount) {
@@ -248,6 +328,40 @@ class LightPopupCard extends LitElement {
             justify-content: center;
             flex-direction: column;
         }
+        .popup-inner.off {
+          display:none;
+        }
+        #settings {
+            position:absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display:none;
+        }
+        .settings-inner {
+          height: 100%;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+        #settings.on {
+          display:block;
+        }
+        .bottom-right-btn {
+          position:absolute;
+          bottom:15px;
+          right:30px;
+          background-color: #7f8082;
+          color: #FFF;
+          border: 0;
+          padding: 5px 20px;
+          border-radius: 10px;
+          font-weight: 500;
+          cursor: pointer;
+        }
         .fullscreen {
           margin-top:-64px;
         }
@@ -311,7 +425,7 @@ class LightPopupCard extends LitElement {
         .range-holder input[type="range"]::-webkit-slider-runnable-track {
             height: var(--slider-width);
             -webkit-appearance: none;
-            color: #ddd;
+            background-color: var(--slider-track-color);
             margin-top: -1px;
             transition: box-shadow 0.2s ease-in-out;
         }

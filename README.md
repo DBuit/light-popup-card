@@ -48,6 +48,9 @@ resources:
 | `sliderColor` | string | optional | "#FFF" | The color of the slider |
 | `sliderColoredByLight` | boolean | optional | false | Let the color of the slider change based on the light color, this overwrites the sliderColor setting |
 | `sliderThumbColor` | string | optional | "#ddd" | The color of the line that you use to slide the slider  |
+| `sliderTrackColor` | string | optional | "#ddd" | The color of the slider track |
+| `settings` | boolean | optional | false | When it will add an settings button that displays the more-info content |
+
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
 These actions are calling a service with specific service data. For people that used the `scenes:` before can still activate scenes look at the first example below.
@@ -116,6 +119,46 @@ popup_cards:
             entity_id: scene.energie
           color: "#8BCBDD"
           name: energie
+```
+
+### Settings
+
+When settings added to your configuration this will display an extra button in the bottom right corner that when clicked
+switches the popup with the more-info content to give you extra controls.
+
+Default the button show the text `Settings` and when on the settings page it show an close button with the text `Close`.
+Both text can be overwritten as shown in configuration below
+
+```
+card:
+  type: custom:light-popup-card
+  entity: light.beganegrond
+  settings:
+    openButton: Instellingen
+    closeButton: Sluiten
+```
+
+If you want the extra settings page but don't wanna show the more-info content you can also display any other lovelace card.
+First you enable the settings like above and then set a custom settingsCards by adding `settingsCard` to your configuration.
+Than you set the configuration for the card and overwrite the styles under de settingsCard. See configuration example below
+
+```
+card:
+  type: custom:light-popup-card
+  entity: light.beganegrond
+  settings:
+    openButton: Instellingen
+    closeButton: Sluiten
+  settingsCard:
+    type: entities
+    cardOptions:
+      entities:
+        - light.beganegrond
+        - light.zithoek
+        - light.eettafel
+        - light.kookeiland
+    cardStyle: |
+      background-color:#FFF;
 ```
 
 ![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png)
