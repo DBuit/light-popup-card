@@ -163,4 +163,5 @@ card:
 
 ![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png)
 ![Screenshot of card with switch](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-switch.png)
-
+![Screenshot of card with settings](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-settings.png)
+![Screenshot of card with settings opened](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-settings-page.png)

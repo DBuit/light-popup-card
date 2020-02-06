@@ -84,7 +84,7 @@ class LightPopupCard extends LitElement {
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div id="popup" class="popup-inner" @click="${e => this._close(e)}">
-                <div class="icon fullscreen">
+                <div class="icon${fullscreen === true ? ' fullscreen':''}">
                     <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
