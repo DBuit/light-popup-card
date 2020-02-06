@@ -8,6 +8,8 @@ class LightPopupCard extends LitElement {
   config: any;
   hass: any;
   shadowRoot: any;
+  actionRows:any = [];
+  currentBrightness = 0;
 
   static get properties() {
     return {
@@ -25,7 +27,7 @@ class LightPopupCard extends LitElement {
     
     var entity = this.config.entity;
     var stateObj = this.hass.states[entity];
-    var scenesInARow = this.config.scenesInARow ? this.config.scenesInARow : 4;
+    var actionsInARow = this.config.actionsInARow ? this.config.actionsInARow : 4;
     var brightness = 0;
     if(stateObj.attributes.brightness) {
         brightness = stateObj.attributes.brightness /2.55;
@@ -34,15 +36,15 @@ class LightPopupCard extends LitElement {
     var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
     var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
     //Scenes
-    var scenes = this.config.scenes;
-    if(scenes && scenes.length > 0) {
-        var sceneRows:any = [];
-        var numberOfRows = Math.ceil(scenes.length / scenesInARow);
+    var actions = this.config.actions;
+    if(actions && actions.length > 0) {
+        
+        var numberOfRows = Math.ceil(actions.length / actionsInARow);
         for(var i=0;i<numberOfRows;i++) {
-            sceneRows[i] = [];
-            for(var j=0;j<scenesInARow;j++) {
-                if(scenes[(i*scenesInARow)+j]) {
-                    sceneRows[i][j] = scenes[(i*scenesInARow)+j];
+          this.actionRows[i] = [];
+            for(var j=0;j<actionsInARow;j++) {
+                if(actions[(i*actionsInARow)+j]) {
+                  this.actionRows[i][j] = actions[(i*actionsInARow)+j];
                 }
             }
         }
@@ -66,6 +68,11 @@ class LightPopupCard extends LitElement {
     var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
 
     var color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
+    var sliderColor = "sliderColor" in this.config ? this.config.sliderColor : "#FFF";
+    var sliderColoredByLight = "sliderColoredByLight" in this.config ? this.config.sliderColoredByLight : false;
+    var sliderThumbColor = "sliderThumbColor" in this.config ? this.config.sliderThumbColor : "#ddd";
+    var actionRowCount = 0;
+    this.currentBrightness = Math.round(stateObj.attributes.brightness/2.55);
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div class="popup-inner" @click="${e => this._close(e)}">
@@ -73,9 +80,9 @@ class LightPopupCard extends LitElement {
                     <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
-                    <h4 class="${stateObj.state === "off" ? '' : 'brightness'}">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : Math.round(stateObj.attributes.brightness/2.55)}</h4>
+                    <h4 id="brightnessValue" class="${stateObj.state === "off" ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
-                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius}" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html`
                     <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
@@ -84,32 +91,33 @@ class LightPopupCard extends LitElement {
                     </div>
                 `}
 
-                ${scenes && scenes.length > 0 ? html`
-                <div class="scene-holder">
+                ${actions && actions.length > 0 ? html`
+                <div class="action-holder">
 
-                    ${sceneRows.map((sceneRow) => html`
-                        <div class="scene-row">
-                        ${sceneRow.map((scene) => html`
-                            <div class="scene" data-scene="${scene.scene}">
-                                <span class="color" style="background-color: ${scene.color}"></span>
-                                ${scene.name ? html`<span class="name">${scene.name}</span>`: html``}
+                    ${this.actionRows.map((actionRow) => {
+                      actionRowCount++;
+                      var actionCount = 0;
+                      return html`
+                        <div class="action-row">
+                        ${actionRow.map((action) => {
+                          actionCount++;
+                          return html`
+                            <div class="action" @click="${e => this._activateAction(e)}" data-service="${actionRowCount}#${actionCount}">
+                                <span class="color" style="background-color: ${action.color};border-color: ${action.color};">${action.icon ? html`<ha-icon icon="${action.icon}" />`:html``}</span>
+                                ${action.name ? html`<span class="name">${action.name}</span>`: html``}
                             </div>
-                        `)}
+                          `
+                        })}
                         </div>
-                    `)}
+                      `
+                    })}
                 </div>` : html ``}
             </div>
         </div>
     `;
   }
-  
-  updated() {
-    this.shadowRoot.querySelectorAll(".scene").forEach(scene => {
-        scene.addEventListener('click', () => {
-            this._activateScene(scene.dataset.scene)
-        })
-    });
-  }
+
+  updated() { }
 
   _close(event) {
     if(event && event.target.className === 'popup-inner') {
@@ -124,7 +132,13 @@ class LightPopupCard extends LitElement {
     }
     return items;
   }
-  
+
+  _previewBrightness(value) {
+    this.currentBrightness = value;
+    const el = this.shadowRoot.getElementById("brightnessValue");
+    if(el) {el.dataset.value = value+"%";}
+  }
+
   _setBrightness(state, value) {
     this.hass.callService("homeassistant", "turn_on", {
         entity_id: state.entity_id,
@@ -138,10 +152,14 @@ class LightPopupCard extends LitElement {
       });
   }
   
-  _activateScene(scene) {
-    this.hass.callService("scene", "turn_on", {
-        entity_id: scene
-    });
+  _activateAction(e) {
+    if(e.target.dataset && e.target.dataset.service) {
+      const [row, item] = e.target.dataset.service.split("#", 2);
+      const action = this.actionRows[row-1][item-1];
+      console.log(action);
+      const [domain, service] = action.service.split(".", 2);
+      this.hass.callService(domain, service, action.service_data);
+    }
   }
 
   _getColorForLightEntity(stateObj, useTemperature, useBrightness) {
@@ -260,7 +278,7 @@ class LightPopupCard extends LitElement {
             text-transform: capitalize;
         }
         h4.brightness:after {
-            content: "%";
+            content: attr(data-value);
             padding-left: 1px;
         }
         
@@ -299,15 +317,15 @@ class LightPopupCard extends LitElement {
         }
         .range-holder input[type="range"]::-webkit-slider-thumb {
             width: 25px;
-            border-right:10px solid #FFF;
-            border-left:10px solid #FFF;
-            border-top:20px solid #FFF;
-            border-bottom:20px solid #FFF;
+            border-right:10px solid var(--slider-color);
+            border-left:10px solid var(--slider-color);
+            border-top:20px solid var(--slider-color);
+            border-bottom:20px solid var(--slider-color);
             -webkit-appearance: none;
             height: 80px;
             cursor: ew-resize;
             background: #fff;
-            box-shadow: -350px 0 0 350px #FFF, inset 0 0 0 80px #ddd;
+            box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
             border-radius: 0;
             transition: box-shadow 0.2s ease-in-out;
             position: relative;
@@ -361,39 +379,47 @@ class LightPopupCard extends LitElement {
             border-radius: var(--slider-border-radius, 12px);
         }
         
-        .scene-holder {
+        .action-holder {
             display: flex;
             flex-direction: column;
             margin-top:20px;
         }
-        .scene-row {
+        .action-row {
             display:block;
-            text-align:center;
             padding-bottom:10px;
         }
-        .scene-row:last-child {
+        .action-row:last-child {
             padding:0;
         }
-        .scene-holder .scene {
+        .action-holder .action {
             display:inline-block;
             margin-right:10px;
             cursor:pointer;
         }
-        .scene-holder .scene:nth-child(4n) {
+        .action-holder .action:nth-child(4n) {
             margin-right:0;
         }
-        .scene-holder .scene .color {
+        .action-holder .action .color {
             width:50px;
             height:50px;
             border-radius:50%;
             display:block;
+            border: 1px solid #FFF;
+            line-height: 50px;
+            text-align: center;
+            pointer-events: none;
         }
-        .scene-holder .scene .name {
+        .action-holder .action .color ha-icon {
+          pointer-events: none;
+        }
+        .action-holder .action .name {
             width:50px;
             display:block;
             color: #FFF;
             font-size: 9px;
             margin-top:3px;
+            text-align:center;
+            pointer-events: none;
         }
     `;
   }  

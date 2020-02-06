@@ -1,7 +1,11 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+
 # Light popup card (homekit style)
 Popup lovelace card with brightness slider and optional scene selection or a light switch for lights without brightness.
 Can be used in combination with thomas loven browser_mod or custom pop-up card or in combination with my homekit style card: https://github.com/DBuit/Homekit-panel-card
 
+
+<a href="https://www.buymeacoffee.com/ZrUK14i" target="_blank"><img height="41px" width="167px" src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"></a>
 
 ## Configuration
 
@@ -34,22 +38,31 @@ resources:
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
 | `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
 | `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
-| `scenes` | object | optional | `scenes:`  | define scenes that you can activate from the pop-up. |
+| `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
 | `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
 | `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
 | `switchWidth` | string | optional | 150px | The width of the switch |
 | `switchHeight` | string | optional | 400px | The height of the switch |
-' `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
+| `borderRadius` | string | optional | 12px | The border radius of the slider and switch |
+| `sliderColor` | string | optional | "#FFF" | The color of the slider |
+| `sliderColoredByLight` | boolean | optional | false | Let the color of the slider change based on the light color, this overwrites the sliderColor setting |
+| `sliderThumbColor` | string | optional | "#ddd" | The color of the line that you use to slide the slider  |
 
-To show scenes in the pop-up you add `scenes:` in the config of the card follow bij multiple scenes:
+To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
+These actions are calling a service with specific service data. For people that used the `scenes:` before can still activate scenes look at the first example below.
 ```
-scenes:
-  - scene: scene.sceneone
-    color: "#FDCA64"
-    name: "first scene"
-  - scene: scene.scenetwo
-    color: "#FDCA64"
+actions:
+  - service: scene.turn_on
+    service_data:
+      entity_id: scene.energie
+    color: "#8BCBDD"
+    name: energie
+  - service: homeassistant.toggle
+    service_data:
+      entity_id: light.voordeurlicht
+    name: voordeur
+    icon: mdi:lightbulb
 ```
 The name option within a scene is **optional**
 
@@ -77,22 +90,32 @@ popup_cards:
       type: custom:light-popup-card
       entity: light.beganegrond
       icon: mdi:led-strip
-      scenesInARow: 2
+      actionsInARow: 2
       brightnessWidth: 150px
       brightnessHeight: 400px
       switchWidth: 150px
       switchHeight: 400px
-      scenes:
-        - scene: scene.ontspannen
+      actions:
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.ontspannen
           color: "#FDCA64"
           name: ontspannen
-        - scene: scene.helder
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.helder
           color: "#FFE7C0"
           name: helder
-        - scene: scene.concentreren
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.concentreren
           color: "#BBEEF3"
-        - scene: scene.energie
+          name: concentreren
+        - service: scene.turn_on
+          service_data:
+            entity_id: scene.energie
           color: "#8BCBDD"
+          name: energie
 ```
 
 ![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png)
