@@ -124,7 +124,7 @@ class LightPopupCard extends LitElement {
             </div>
             
             ${this.settings ? html`
-            <div id="settings">
+            <div id="settings" class="${fullscreen === true ? ' fullscreen':''}">
               <div class="settings-inner" @click="${e => this._close(e)}">
                 ${this.settingsCustomCard ? html`
                   <card-maker nohass data-card="${this.config.settingsCard.type}" data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}" data-style="${this.config.settingsCard.cardStyle ? this.config.settingsCard.cardStyle : ''}">
@@ -332,12 +332,15 @@ class LightPopupCard extends LitElement {
           display:none;
         }
         #settings {
-            position:absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display:none;
+          position:relative;
+          display:none;
+        }
+        #settings.fullscreen {
+          position:absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
         }
         .settings-inner {
           height: 100%;
@@ -417,7 +420,7 @@ class LightPopupCard extends LitElement {
             overflow: hidden;
             height: var(--slider-width);
             -webkit-appearance: none;
-            background-color: #ddd;
+            background-color: var(--slider-track-color);
             position: absolute;
             top: calc(50% - (var(--slider-width) / 2));
             right: calc(50% - (var(--slider-height) / 2));
