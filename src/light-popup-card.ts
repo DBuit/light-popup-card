@@ -80,6 +80,19 @@ class LightPopupCard extends LitElement {
 
     this.settings = "settings" in this.config? true : false;
     this.settingsCustomCard = "settingsCard" in this.config? true : false;
+    if(this.settingsCustomCard && this.config.settingsCard.cardOptions) {
+      if(this.config.settingsCard.cardOptions.entity && this.config.settingsCard.cardOptions.entity == 'this') {
+        this.config.settingsCard.cardOptions.entity = entity;
+      } else if(this.config.settingsCard.cardOptions.entity_id && this.config.settingsCard.cardOptions.entity_id == 'this') {
+        this.config.settingsCard.cardOptions.entity_id = entity;
+      } else if(this.config.settingsCard.cardOptions.entities) {
+        for(let key in this.config.settingsCard.cardOptions.entities) {
+          if(this.config.settingsCard.cardOptions.entities[key] == 'this') {
+            this.config.settingsCard.cardOptions.entities[key] = entity;
+          }
+        }
+      }
+    }
 
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
@@ -236,7 +249,6 @@ class LightPopupCard extends LitElement {
     if(e.target.dataset && e.target.dataset.service) {
       const [row, item] = e.target.dataset.service.split("#", 2);
       const action = this.actionRows[row-1][item-1];
-      console.log(action);
       const [domain, service] = action.service.split(".", 2);
       this.hass.callService(domain, service, action.service_data);
     }
