@@ -142,6 +142,8 @@ If you want the extra settings page but don't wanna show the more-info content y
 First you enable the settings like above and then set a custom settingsCards by adding `settingsCard` to your configuration.
 Than you set the configuration for the card and overwrite the styles under de settingsCard. See configuration example below
 
+When the card you are loading with settingsCard needs and `entity`, `entity_id` or `entities` you can also set **this** as the value. **this** is replaced with the entity of which the popup is opened for.
+
 ```
 card:
   type: custom:light-popup-card
