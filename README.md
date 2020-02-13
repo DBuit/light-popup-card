@@ -39,6 +39,7 @@ resources:
 | `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
 | `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
 | `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
+| `actionSize` | string | optional | `50px`  | Set the size of the action buttons default `50px` |
 | `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
 | `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
@@ -50,7 +51,7 @@ resources:
 | `sliderThumbColor` | string | optional | "#ddd" | The color of the line that you use to slide the slider  |
 | `sliderTrackColor` | string | optional | "#ddd" | The color of the slider track |
 | `settings` | boolean | optional | false | When it will add an settings button that displays the more-info content |
-
+| `settingsPosition` | string | optional | `bottom`  | set position of the settings button options: `top` or `bottom`. |
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
 These actions are calling a service with specific service data. For people that used the `scenes:` before can still activate scenes look at the first example below.
@@ -141,8 +142,6 @@ card:
 If you want the extra settings page but don't wanna show the more-info content you can also display any other lovelace card.
 First you enable the settings like above and then set a custom settingsCards by adding `settingsCard` to your configuration.
 Than you set the configuration for the card and overwrite the styles under de settingsCard. See configuration example below
-
-When the card you are loading with settingsCard needs and `entity`, `entity_id` or `entities` you can also set **this** as the value. **this** is replaced with the entity of which the popup is opened for.
 
 ```
 card:

@@ -12,6 +12,7 @@ class LightPopupCard extends LitElement {
   currentBrightness = 0;
   settings = false;
   settingsCustomCard = false;
+  settingsPosition = "bottom";
 
   static get properties() {
     return {
@@ -38,6 +39,7 @@ class LightPopupCard extends LitElement {
     var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
     var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
     //Scenes
+    var actionSize = "actionSize" in this.config ? this.config.actionSize : "50px";
     var actions = this.config.actions;
     if(actions && actions.length > 0) {
         
@@ -78,8 +80,9 @@ class LightPopupCard extends LitElement {
     this.currentBrightness = Math.round(stateObj.attributes.brightness/2.55);
     
 
-    this.settings = "settings" in this.config? true : false;
-    this.settingsCustomCard = "settingsCard" in this.config? true : false;
+    this.settings = "settings" in this.config ? true : false;
+    this.settingsCustomCard = "settingsCard" in this.config ? true : false;
+    this.settingsPosition = "settingsPosition" in this.config ? this.config.settingsPosition : "bottom";
     if(this.settingsCustomCard && this.config.settingsCard.cardOptions) {
       if(this.config.settingsCard.cardOptions.entity && this.config.settingsCard.cardOptions.entity == 'this') {
         this.config.settingsCard.cardOptions.entity = entity;
@@ -123,8 +126,8 @@ class LightPopupCard extends LitElement {
                         ${actionRow.map((action) => {
                           actionCount++;
                           return html`
-                            <div class="action" @click="${e => this._activateAction(e)}" data-service="${actionRowCount}#${actionCount}">
-                                <span class="color" style="background-color: ${action.color};border-color: ${action.color};">${action.icon ? html`<ha-icon icon="${action.icon}" />`:html``}</span>
+                            <div class="action" style="--size:${actionSize};" @click="${e => this._activateAction(e)}" data-service="${actionRowCount}#${actionCount}">
+                                <span class="color" style="background-color: ${action.color};border-color: ${action.color};--size:${actionSize};">${action.icon ? html`<ha-icon icon="${action.icon}" />`:html``}</span>
                                 ${action.name ? html`<span class="name">${action.name}</span>`: html``}
                             </div>
                           `
@@ -133,7 +136,7 @@ class LightPopupCard extends LitElement {
                       `
                     })}
                 </div>` : html ``}
-                ${this.settings ? html`<button class="bottom-right-btn" @click="${() => this._openSettings()}">${this.config.settings.openButton ? this.config.settings.openButton:'Settings'}</button>`:html``}
+                ${this.settings ? html`<button class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen':''}" @click="${() => this._openSettings()}">${this.config.settings.openButton ? this.config.settings.openButton:'Settings'}</button>`:html``}
             </div>
             
             ${this.settings ? html`
@@ -156,7 +159,7 @@ class LightPopupCard extends LitElement {
                     --primary-text-color: white !important;"
                   ></more-info-controls>
                 `}
-                <button class="bottom-right-btn" @click="${() => this._closeSettings()}">${this.config.settings.closeButton ? this.config.settings.closeButton:'Close'}</button>
+                <button class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen':''}" @click="${() => this._closeSettings()}">${this.config.settings.closeButton ? this.config.settings.closeButton:'Close'}</button>
               </div>
             </div>
             `:html``}
@@ -344,7 +347,6 @@ class LightPopupCard extends LitElement {
           display:none;
         }
         #settings {
-          position:relative;
           display:none;
         }
         #settings.fullscreen {
@@ -365,9 +367,8 @@ class LightPopupCard extends LitElement {
         #settings.on {
           display:block;
         }
-        .bottom-right-btn {
+        .settings-btn {
           position:absolute;
-          bottom:15px;
           right:30px;
           background-color: #7f8082;
           color: #FFF;
@@ -377,6 +378,16 @@ class LightPopupCard extends LitElement {
           font-weight: 500;
           cursor: pointer;
         }
+        .settings-btn.bottom {
+          bottom:15px;
+        }
+        .settings-btn.top {
+          top: 25px;
+        }
+        .settings-btn.top.fullscreen {
+          top: 25px;
+        }
+        
         .fullscreen {
           margin-top:-64px;
         }
@@ -529,12 +540,12 @@ class LightPopupCard extends LitElement {
             margin-right:0;
         }
         .action-holder .action .color {
-            width:50px;
-            height:50px;
+            width:var(--size);
+            height:var(--size);
             border-radius:50%;
             display:block;
             border: 1px solid #FFF;
-            line-height: 50px;
+            line-height: var(--size);
             text-align: center;
             pointer-events: none;
         }
@@ -542,7 +553,7 @@ class LightPopupCard extends LitElement {
           pointer-events: none;
         }
         .action-holder .action .name {
-            width:50px;
+            width:var(--size);
             display:block;
             color: #FFF;
             font-size: 9px;
