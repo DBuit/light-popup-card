@@ -40,7 +40,7 @@ resources:
 | `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
 | `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
 | `actionSize` | string | optional | `50px`  | Set the size of the action buttons default `50px` |
-| `scenesInARow` | number | optional | 3 | number of scenes that will be placed in a row under the brightness slider |
+| `actionsInARow` | number | optional | 3 | number of actions that will be placed in a row under the brightness slider |
 | `brightnessWidth` | string | optional | 150px | The width of the brightness slider |
 | `brightnessHeight` | string | optional | 400px | The height of the brightness slider |
 | `switchWidth` | string | optional | 150px | The width of the switch |
@@ -54,7 +54,7 @@ resources:
 | `settingsPosition` | string | optional | `bottom`  | set position of the settings button options: `top` or `bottom`. |
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
-These actions are calling a service with specific service data. For people that used the `scenes:` before can still activate scenes look at the first example below.
+These actions are calling a service with specific service data. For people that used the `services:` before can still activate scenes look at the first example below.
 ```
 actions:
   - service: scene.turn_on

@@ -192,8 +192,7 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
             </div>
             
             ${this.settings?T`
-            <div id="settings" class="${!0===u?" fullscreen":""}">
-              <div class="settings-inner" @click="${t=>this._close(t)}">
+              <div id="settings" class="settings-inner" @click="${t=>this._close(t)}">
                 ${this.settingsCustomCard?T`
                   <card-maker nohass data-card="${this.config.settingsCard.type}" data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}" data-style="${this.config.settingsCard.cardStyle?this.config.settingsCard.cardStyle:""}">
                   </card-maker>
@@ -213,10 +212,9 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
                 `}
                 <button class="settings-btn ${this.settingsPosition}${!0===u?" fullscreen":""}" @click="${()=>this._closeSettings()}">${this.config.settings.closeButton?this.config.settings.closeButton:"Close"}</button>
               </div>
-            </div>
             `:T``}
         </div>
-    `}updated(){}firstUpdated(){if(this.settings&&!this.settingsCustomCard){const t=this.shadowRoot.querySelector("more-info-controls").shadowRoot;t.removeChild(t.querySelector("app-toolbar"))}else this.settings&&this.settingsCustomCard&&this.shadowRoot.querySelectorAll("card-maker").forEach(t=>{var e={type:t.dataset.card};e=Object.assign({},e,JSON.parse(t.dataset.options)),t.config=e;let r="";if(t.dataset.style&&(r=t.dataset.style),""!=r){let e=0,i=setInterval((function(){let s=t.children[0];if(s){window.clearInterval(i);var n=document.createElement("style");n.innerHTML=r,s.shadowRoot.appendChild(n)}else 10==++e&&window.clearInterval(i)}),100)}})}_close(t){!t||"popup-inner"!==t.target.className&&"settings-inner"!==t.target.className||function(){const t=document.querySelector("hc-main")||document.querySelector("home-assistant"),e=t&&t._moreInfoEl;e&&e.close()}()}_openSettings(){this.shadowRoot.getElementById("popup").classList.add("off"),this.shadowRoot.getElementById("settings").classList.add("on")}_closeSettings(){this.shadowRoot.getElementById("settings").classList.remove("on"),this.shadowRoot.getElementById("popup").classList.remove("off")}_createRange(t){const e=[];for(let r=0;r<t;r++)e.push(r);return e}_previewBrightness(t){this.currentBrightness=t;const e=this.shadowRoot.getElementById("brightnessValue");e&&(e.dataset.value=t+"%")}_setBrightness(t,e){this.hass.callService("homeassistant","turn_on",{entity_id:t.entity_id,brightness:2.55*e})}_switch(t){this.hass.callService("homeassistant","toggle",{entity_id:t.entity_id})}_activateAction(t){if(t.target.dataset&&t.target.dataset.service){const[e,r]=t.target.dataset.service.split("#",2),i=this.actionRows[e-1][r-1],[s,n]=i.service.split(".",2);this.hass.callService(s,n,i.service_data)}}_getColorForLightEntity(t,e,r){var i=this.config.default_color?this.config.default_color:void 0;return t&&(t.attributes.rgb_color?(i=`rgb(${t.attributes.rgb_color.join(",")})`,t.attributes.brightness&&(i=this._applyBrightnessToColor(i,(t.attributes.brightness+245)/5))):e&&t.attributes.color_temp&&t.attributes.min_mireds&&t.attributes.max_mireds?(i=this._getLightColorBasedOnTemperature(t.attributes.color_temp,t.attributes.min_mireds,t.attributes.max_mireds),t.attributes.brightness&&(i=this._applyBrightnessToColor(i,(t.attributes.brightness+245)/5))):i=r&&t.attributes.brightness?this._applyBrightnessToColor(this._getDefaultColorForState(),(t.attributes.brightness+245)/5):this._getDefaultColorForState()),i}_applyBrightnessToColor(t,e){const r=new yt(this._getColorFromVariable(t));if(r.isValid){const t=r.mix("black",100-e).toString();if(t)return t}return t}_getLightColorBasedOnTemperature(t,e,r){const i=new yt("rgb(255, 160, 0)"),s=new yt("rgb(166, 209, 255)"),n=new yt("white"),o=(t-e)/(r-e)*100;return o<50?vt(s).mix(n,2*o).toRgbString():vt(n).mix(i,2*(o-50)).toRgbString()}_getDefaultColorForState(){return this.config.color_on?this.config.color_on:"#f7d959"}_getColorFromVariable(t){return void 0!==t&&"var"===t.substring(0,3)?window.getComputedStyle(document.documentElement).getPropertyValue(t.substring(4).slice(0,-1)).trim():t}setConfig(t){if(!t.entity)throw new Error("You need to define an entity");this.config=t}getCardSize(){return this.config.entities.length+1}static get styles(){return G`
+    `}updated(){}firstUpdated(){if(this.settings&&!this.settingsCustomCard){const t=this.shadowRoot.querySelector("more-info-controls").shadowRoot;t.removeChild(t.querySelector("app-toolbar"))}else this.settings&&this.settingsCustomCard&&this.shadowRoot.querySelectorAll("card-maker").forEach(t=>{var e={type:t.dataset.card};e=Object.assign({},e,JSON.parse(t.dataset.options)),t.config=e;let r="";if(t.dataset.style&&(r=t.dataset.style),""!=r){let e=0,i=setInterval((function(){let s=t.children[0];if(s){window.clearInterval(i);var n=document.createElement("style");n.innerHTML=r,s.shadowRoot.appendChild(n)}else 10==++e&&window.clearInterval(i)}),100)}})}_close(t){t&&(t.target.className.includes("popup-inner")||t.target.className.includes("settings-inner"))&&function(){const t=document.querySelector("hc-main")||document.querySelector("home-assistant"),e=t&&t._moreInfoEl;e&&e.close()}()}_openSettings(){this.shadowRoot.getElementById("popup").classList.add("off"),this.shadowRoot.getElementById("settings").classList.add("on")}_closeSettings(){this.shadowRoot.getElementById("settings").classList.remove("on"),this.shadowRoot.getElementById("popup").classList.remove("off")}_createRange(t){const e=[];for(let r=0;r<t;r++)e.push(r);return e}_previewBrightness(t){this.currentBrightness=t;const e=this.shadowRoot.getElementById("brightnessValue");e&&(e.dataset.value=t+"%")}_setBrightness(t,e){this.hass.callService("homeassistant","turn_on",{entity_id:t.entity_id,brightness:2.55*e})}_switch(t){this.hass.callService("homeassistant","toggle",{entity_id:t.entity_id})}_activateAction(t){if(t.target.dataset&&t.target.dataset.service){const[e,r]=t.target.dataset.service.split("#",2),i=this.actionRows[e-1][r-1],[s,n]=i.service.split(".",2);this.hass.callService(s,n,i.service_data)}}_getColorForLightEntity(t,e,r){var i=this.config.default_color?this.config.default_color:void 0;return t&&(t.attributes.rgb_color?(i=`rgb(${t.attributes.rgb_color.join(",")})`,t.attributes.brightness&&(i=this._applyBrightnessToColor(i,(t.attributes.brightness+245)/5))):e&&t.attributes.color_temp&&t.attributes.min_mireds&&t.attributes.max_mireds?(i=this._getLightColorBasedOnTemperature(t.attributes.color_temp,t.attributes.min_mireds,t.attributes.max_mireds),t.attributes.brightness&&(i=this._applyBrightnessToColor(i,(t.attributes.brightness+245)/5))):i=r&&t.attributes.brightness?this._applyBrightnessToColor(this._getDefaultColorForState(),(t.attributes.brightness+245)/5):this._getDefaultColorForState()),i}_applyBrightnessToColor(t,e){const r=new yt(this._getColorFromVariable(t));if(r.isValid){const t=r.mix("black",100-e).toString();if(t)return t}return t}_getLightColorBasedOnTemperature(t,e,r){const i=new yt("rgb(255, 160, 0)"),s=new yt("rgb(166, 209, 255)"),n=new yt("white"),o=(t-e)/(r-e)*100;return o<50?vt(s).mix(n,2*o).toRgbString():vt(n).mix(i,2*(o-50)).toRgbString()}_getDefaultColorForState(){return this.config.color_on?this.config.color_on:"#f7d959"}_getColorFromVariable(t){return void 0!==t&&"var"===t.substring(0,3)?window.getComputedStyle(document.documentElement).getPropertyValue(t.substring(4).slice(0,-1)).trim():t}setConfig(t){if(!t.entity)throw new Error("You need to define an entity");this.config=t}getCardSize(){return this.config.entities.length+1}static get styles(){return G`
         :host {
             background-color:#000!important;
         }
@@ -242,13 +240,6 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
         #settings {
           display:none;
         }
-        #settings.fullscreen {
-          position:absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-        }
         .settings-inner {
           height: 100%;
           width: 100%;
@@ -258,7 +249,7 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
           flex-direction: column;
         }
         #settings.on {
-          display:block;
+          display:flex;
         }
         .settings-btn {
           position:absolute;
@@ -274,13 +265,12 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
         .settings-btn.bottom {
           bottom:15px;
         }
+        .settings-btn.bottom.fullscreen {
+          margin:0;
+        }
         .settings-btn.top {
           top: 25px;
         }
-        .settings-btn.top.fullscreen {
-          top: 25px;
-        }
-        
         .fullscreen {
           margin-top:-64px;
         }

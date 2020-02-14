@@ -140,8 +140,7 @@ class LightPopupCard extends LitElement {
             </div>
             
             ${this.settings ? html`
-            <div id="settings" class="${fullscreen === true ? ' fullscreen':''}">
-              <div class="settings-inner" @click="${e => this._close(e)}">
+              <div id="settings" class="settings-inner" @click="${e => this._close(e)}">
                 ${this.settingsCustomCard ? html`
                   <card-maker nohass data-card="${this.config.settingsCard.type}" data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}" data-style="${this.config.settingsCard.cardStyle ? this.config.settingsCard.cardStyle : ''}">
                   </card-maker>
@@ -161,7 +160,6 @@ class LightPopupCard extends LitElement {
                 `}
                 <button class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen':''}" @click="${() => this._closeSettings()}">${this.config.settings.closeButton ? this.config.settings.closeButton:'Close'}</button>
               </div>
-            </div>
             `:html``}
         </div>
     `;
@@ -207,7 +205,7 @@ class LightPopupCard extends LitElement {
   }
 
   _close(event) {
-    if(event && (event.target.className === 'popup-inner' || event.target.className === 'settings-inner')) {
+    if(event && (event.target.className.includes('popup-inner') || event.target.className.includes('settings-inner'))) {
         closePopUp();
     }
   }
@@ -349,13 +347,6 @@ class LightPopupCard extends LitElement {
         #settings {
           display:none;
         }
-        #settings.fullscreen {
-          position:absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-        }
         .settings-inner {
           height: 100%;
           width: 100%;
@@ -365,7 +356,7 @@ class LightPopupCard extends LitElement {
           flex-direction: column;
         }
         #settings.on {
-          display:block;
+          display:flex;
         }
         .settings-btn {
           position:absolute;
@@ -381,13 +372,12 @@ class LightPopupCard extends LitElement {
         .settings-btn.bottom {
           bottom:15px;
         }
+        .settings-btn.bottom.fullscreen {
+          margin:0;
+        }
         .settings-btn.top {
           top: 25px;
         }
-        .settings-btn.top.fullscreen {
-          top: 25px;
-        }
-        
         .fullscreen {
           margin-top:-64px;
         }
