@@ -21,13 +21,13 @@ class LightPopupCard extends LitElement {
       active: {}
     };
   }
-  
+
   constructor() {
     super();
   }
-  
+
   render() {
-    
+
     var entity = this.config.entity;
     var stateObj = this.hass.states[entity];
     var actionsInARow = this.config.actionsInARow ? this.config.actionsInARow : 4;
@@ -36,13 +36,13 @@ class LightPopupCard extends LitElement {
         brightness = stateObj.attributes.brightness /2.55;
     }
     var icon = this.config.icon ? this.config.icon : stateObj.attributes.icon ? stateObj.attributes.icon: 'mdi:lightbulb';
-    var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
+    var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';
     var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
     //Scenes
     var actionSize = "actionSize" in this.config ? this.config.actionSize : "50px";
     var actions = this.config.actions;
     if(actions && actions.length > 0) {
-        
+
         var numberOfRows = Math.ceil(actions.length / actionsInARow);
         for(var i=0;i<numberOfRows;i++) {
           this.actionRows[i] = [];
@@ -78,7 +78,7 @@ class LightPopupCard extends LitElement {
     var sliderTrackColor = "sliderTrackColor" in this.config ? this.config.sliderTrackColor : "#ddd";
     var actionRowCount = 0;
     this.currentBrightness = Math.round(stateObj.attributes.brightness/2.55);
-    
+
 
     this.settings = "settings" in this.config ? true : false;
     this.settingsCustomCard = "settingsCard" in this.config ? true : false;
@@ -138,7 +138,7 @@ class LightPopupCard extends LitElement {
                 </div>` : html ``}
                 ${this.settings ? html`<button class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen':''}" @click="${() => this._openSettings()}">${this.config.settings.openButton ? this.config.settings.openButton:'Settings'}</button>`:html``}
             </div>
-            
+
             ${this.settings ? html`
               <div id="settings" class="settings-inner" @click="${e => this._close(e)}">
                 ${this.settingsCustomCard ? html`
@@ -239,13 +239,13 @@ class LightPopupCard extends LitElement {
         brightness: value * 2.55
     });
   }
-  
+
   _switch(state) {
       this.hass.callService("homeassistant", "toggle", {
-        entity_id: state.entity_id    
+        entity_id: state.entity_id
       });
   }
-  
+
   _activateAction(e) {
     if(e.target.dataset && e.target.dataset.service) {
       const [row, item] = e.target.dataset.service.split("#", 2);
@@ -308,7 +308,7 @@ class LightPopupCard extends LitElement {
       }
       return color;
     }
-  
+
   setConfig(config) {
     if (!config.entity) {
       throw new Error("You need to define an entity");
@@ -319,7 +319,7 @@ class LightPopupCard extends LitElement {
   getCardSize() {
     return this.config.entities.length + 1;
   }
-  
+
   static get styles() {
     return css`
         :host {
@@ -411,7 +411,7 @@ class LightPopupCard extends LitElement {
             content: attr(data-value);
             padding-left: 1px;
         }
-        
+
         .range-holder {
             height: var(--slider-height);
             width: var(--slider-width);
@@ -445,7 +445,8 @@ class LightPopupCard extends LitElement {
             margin-top: -1px;
             transition: box-shadow 0.2s ease-in-out;
         }
-        .range-holder input[type="range"]::-webkit-slider-thumb {
+        .range-holder input[type="range"]::-webkit-slider-thumb,
+        .range-holder input[type="range"]::-moz-range-thumb {
             width: 25px;
             border-right:10px solid var(--slider-color);
             border-left:10px solid var(--slider-color);
@@ -461,6 +462,12 @@ class LightPopupCard extends LitElement {
             position: relative;
             top: calc((var(--slider-width) - 80px) / 2);
         }
+
+        .range-holder input[type="range"]::-moz-range-thumb {
+            width: 6px;
+            height: 40px;
+        }
+
         .switch-holder {
             height: var(--switch-height);
             width: var(--switch-width);
@@ -495,7 +502,8 @@ class LightPopupCard extends LitElement {
             margin-top: -1px;
             transition: box-shadow 0.2s ease-in-out;
         }
-        .switch-holder input[type="range"]::-webkit-slider-thumb {
+        .switch-holder input[type="range"]::-webkit-slider-thumb,
+        .switch-holder input[type="range"]::-moz-range-thumb {
             width: calc(var(--switch-height) / 2);
             -webkit-appearance: none;
             height: calc(var(--switch-width) - 20px);
@@ -508,7 +516,6 @@ class LightPopupCard extends LitElement {
             top: 0;
             border-radius: var(--slider-border-radius, 12px);
         }
-        
         .action-holder {
             display: flex;
             flex-direction: column;
@@ -552,8 +559,8 @@ class LightPopupCard extends LitElement {
             pointer-events: none;
         }
     `;
-  }  
-  
+  }
+
 }
 
 customElements.define('light-popup-card', LightPopupCard);
