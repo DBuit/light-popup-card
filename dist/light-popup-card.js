@@ -338,8 +338,7 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
             margin-top: -1px;
             transition: box-shadow 0.2s ease-in-out;
         }
-        .range-holder input[type="range"]::-webkit-slider-thumb,
-        .range-holder input[type="range"]::-moz-range-thumb {
+        .range-holder input[type="range"]::-webkit-slider-thumb{
             width: 25px;
             border-right:10px solid var(--slider-color);
             border-left:10px solid var(--slider-color);
@@ -354,6 +353,23 @@ const W="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.pro
             transition: box-shadow 0.2s ease-in-out;
             position: relative;
             top: calc((var(--slider-width) - 80px) / 2);
+        }
+
+        .range-holder input[type="range"]::-moz-range-thumb {
+          width: 25px;
+          border-right:10px solid var(--slider-color);
+          border-left:10px solid var(--slider-color);
+          border-top:20px solid var(--slider-color);
+          border-bottom:20px solid var(--slider-color);
+          -webkit-appearance: none;
+          height: 80px;
+          cursor: ew-resize;
+          background: #fff;
+          box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
+          border-radius: 0;
+          transition: box-shadow 0.2s ease-in-out;
+          position: relative;
+          top: calc((var(--slider-width) - 80px) / 2);
         }
 
         .range-holder input[type="range"]::-moz-range-thumb {
