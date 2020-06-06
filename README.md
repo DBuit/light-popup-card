@@ -17,7 +17,7 @@ Go to the hacs store and use the repo url `https://github.com/DBuit/light-popup-
 Add the following to your ui-lovelace.yaml:
 ```yaml
 resources:
-  url: /community_plugin/light-popup-card/light-popup-card.js
+  url: /hacsfiles/light-popup-card/light-popup-card.js
   type: module
 ```
 
