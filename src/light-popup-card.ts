@@ -101,7 +101,7 @@ class LightPopupCard extends LitElement {
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div id="popup" class="popup-inner" @click="${e => this._close(e)}">
                 <div class="icon${fullscreen === true ? ' fullscreen':''}">
-                    <ha-icon style="${stateObj.state === "on" ? 'fill:'+color+';' : ''}" icon="${icon}" />
+                    <ha-icon style="${stateObj.state === "on" ? 'color:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
                     <h4 id="brightnessValue" class="${stateObj.state === "off" ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
@@ -388,6 +388,7 @@ class LightPopupCard extends LitElement {
             width: 40px;
             color: rgba(255,255,255,0.3);
             font-size: 30px;
+            --mdc-icon-size: 30px;
             padding-top:5px;
         }
         .icon ha-icon {
@@ -395,7 +396,7 @@ class LightPopupCard extends LitElement {
             height:30px;
         }
         .icon.on ha-icon {
-            fill: #f7d959;
+            color: #f7d959;
         }
         h4 {
             color: #FFF;
