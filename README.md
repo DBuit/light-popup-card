@@ -32,12 +32,14 @@ resources:
 
 ### Main Options
 
-| Name | Type | Default | Supported options | Description |
+| Name | Type | Required | Default | Description |
 | -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entity` | string | **Required** | `light.kitchen` | Entity of the light |
+| `entity` | string | **Required** |  | Entity of the light |
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
 | `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
 | `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
+| `offStates` | array | optional | - "off" | Array of states that will make the switch appear to be off |
+| `onStates` | array | optional | - "on" | Array of states that will make the switch appear to be on |
 | `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
 | `actionSize` | string | optional | `50px`  | Set the size of the action buttons default `50px` |
 | `actionsInARow` | number | optional | 3 | number of actions that will be placed in a row under the brightness slider |
