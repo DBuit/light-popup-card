@@ -38,6 +38,8 @@ class LightPopupCard extends LitElement {
     var icon = this.config.icon ? this.config.icon : stateObj.attributes.icon ? stateObj.attributes.icon: 'mdi:lightbulb';
     var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
     var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
+    var onStates = this.config.onStates ? this.config.onStates : ['on'];
+    var offStates = this.config.offStates ? this.config.offStates : ['off'];
     //Scenes
     var actionSize = "actionSize" in this.config ? this.config.actionSize : "50px";
     var actions = this.config.actions;
@@ -55,16 +57,11 @@ class LightPopupCard extends LitElement {
     }
 
     var switchValue = 0;
-    switch(stateObj.state) {
-        case 'on':
-            switchValue = 1;
-            break;
-        case 'off':
-            switchValue = 0;
-            break;
-        default:
-            switchValue = 0;
+
+    if (onStates.includes(stateObj.state)) {
+      switchValue = 1;
     }
+
     var fullscreen = "fullscreen" in this.config ? this.config.fullscreen : true;
     var brightnessWidth = this.config.brightnessWidth ? this.config.brightnessWidth : "150px";
     var brightnessHeight = this.config.brightnessHeight ? this.config.brightnessHeight : "400px";
@@ -101,12 +98,12 @@ class LightPopupCard extends LitElement {
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div id="popup" class="popup-inner" @click="${e => this._close(e)}">
                 <div class="icon${fullscreen === true ? ' fullscreen':''}">
-                    <ha-icon style="${stateObj.state === "on" ? 'color:'+color+';' : ''}" icon="${icon}" />
+                    <ha-icon style="${onStates.includes(stateObj.state) ? 'color:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
-                    <h4 id="brightnessValue" class="${stateObj.state === "off" ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${stateObj.state === "off" ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
+                    <h4 id="brightnessValue" class="${offStates.includes(stateObj.state) ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${offStates.includes(stateObj.state) ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
-                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${stateObj.state === "off" ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
+                        <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html`
                     <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
@@ -454,6 +451,27 @@ class LightPopupCard extends LitElement {
             border-bottom:20px solid var(--slider-color);
             -webkit-appearance: none;
             height: 80px;
+            cursor: ew-resize;
+            background: #fff;
+            box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
+            border-radius: 0;
+            transition: box-shadow 0.2s ease-in-out;
+            position: relative;
+            top: calc((var(--slider-width) - 80px) / 2);
+        }
+        .range-holder input[type="range"]::-moz-thumb-track {
+            height: var(--slider-width);
+            background-color: var(--slider-track-color);
+            margin-top: -1px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        .range-holder input[type="range"]::-moz-range-thumb {
+            width: 5px;
+            border-right:12px solid var(--slider-color);
+            border-left:12px solid var(--slider-color);
+            border-top:20px solid var(--slider-color);
+            border-bottom:20px solid var(--slider-color);
+            height: calc(var(--slider-width)*.4);
             cursor: ew-resize;
             background: #fff;
             box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
