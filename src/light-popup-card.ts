@@ -86,7 +86,7 @@ class LightPopupCard extends LitElement {
         }
       }
     }
-
+    var brightness = stateObj.attributes.brightness ? Math.round(stateObj.attributes.brightness/2.55) : 0;
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div id="popup" class="popup-inner" @click="${e => this._close(e)}">
