@@ -9,7 +9,6 @@ class LightPopupCard extends LitElement {
   hass: any;
   shadowRoot: any;
   actionRows:any = [];
-  currentBrightness = 0;
   settings = false;
   settingsCustomCard = false;
   settingsPosition = "bottom";
@@ -31,10 +30,6 @@ class LightPopupCard extends LitElement {
     var entity = this.config.entity;
     var stateObj = this.hass.states[entity];
     var actionsInARow = this.config.actionsInARow ? this.config.actionsInARow : 4;
-    var brightness = 0;
-    if(stateObj.attributes.brightness) {
-        brightness = stateObj.attributes.brightness /2.55;
-    }
     var icon = this.config.icon ? this.config.icon : stateObj.attributes.icon ? stateObj.attributes.icon: 'mdi:lightbulb';
     var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
     var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
@@ -73,9 +68,7 @@ class LightPopupCard extends LitElement {
     var sliderColoredByLight = "sliderColoredByLight" in this.config ? this.config.sliderColoredByLight : false;
     var sliderThumbColor = "sliderThumbColor" in this.config ? this.config.sliderThumbColor : "#ddd";
     var sliderTrackColor = "sliderTrackColor" in this.config ? this.config.sliderTrackColor : "#ddd";
-    var actionRowCount = 0;
-    this.currentBrightness = Math.round(stateObj.attributes.brightness/2.55);
-    
+    var actionRowCount = 0;    
 
     this.settings = "settings" in this.config ? true : false;
     this.settingsCustomCard = "settingsCard" in this.config ? true : false;
@@ -101,7 +94,7 @@ class LightPopupCard extends LitElement {
                     <ha-icon style="${onStates.includes(stateObj.state) ? 'color:'+color+';' : ''}" icon="${icon}" />
                 </div>
                 ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
-                    <h4 id="brightnessValue" class="${offStates.includes(stateObj.state) ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${offStates.includes(stateObj.state) ? computeStateDisplay(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
+                    <h4 id="brightnessValue">${offStates.includes(stateObj.state) ? "Off" : stateObj.attributes.brightness + '%'}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
                         <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
@@ -225,9 +218,8 @@ class LightPopupCard extends LitElement {
   }
 
   _previewBrightness(value) {
-    this.currentBrightness = value;
     const el = this.shadowRoot.getElementById("brightnessValue");
-    if(el) {el.dataset.value = value+"%";}
+    if(el) {el.innerText = (value == 0) ? "Off" : value + "%";}
   }
 
   _setBrightness(state, value) {
@@ -404,10 +396,6 @@ class LightPopupCard extends LitElement {
             font-size:20px;
             margin-top:0;
             text-transform: capitalize;
-        }
-        h4.brightness:after {
-            content: attr(data-value);
-            padding-left: 1px;
         }
         
         .range-holder {
