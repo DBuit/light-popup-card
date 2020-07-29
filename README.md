@@ -37,7 +37,6 @@ resources:
 | `entity` | string | **Required** |  | Entity of the light |
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
 | `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
-| `supportedFeaturesTreshold` | number | optional | 9 | When the supported features of the light is larger than the treshold than the brightness slider is rendered if it is equal or lower a switch is rendered |
 | `offStates` | array | optional | - "off" | Array of states that will make the switch appear to be off |
 | `onStates` | array | optional | - "on" | Array of states that will make the switch appear to be on |
 | `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
