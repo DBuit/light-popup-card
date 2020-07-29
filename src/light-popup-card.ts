@@ -32,7 +32,7 @@ class LightPopupCard extends LitElement {
     var actionsInARow = this.config.actionsInARow ? this.config.actionsInARow : 4;
     var icon = this.config.icon ? this.config.icon : stateObj.attributes.icon ? stateObj.attributes.icon: 'mdi:lightbulb';
     var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';  
-    var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
+    var supportBrightness = 1;
     var onStates = this.config.onStates ? this.config.onStates : ['on'];
     var offStates = this.config.offStates ? this.config.offStates : ['off'];
     //Scenes
@@ -60,8 +60,8 @@ class LightPopupCard extends LitElement {
     var fullscreen = "fullscreen" in this.config ? this.config.fullscreen : true;
     var brightnessWidth = this.config.brightnessWidth ? this.config.brightnessWidth : "150px";
     var brightnessHeight = this.config.brightnessHeight ? this.config.brightnessHeight : "400px";
-    var switchWidth = this.config.switchWidth ? this.config.switchWidth : "380px";
-    var switchHeight = this.config.switchHeight ? this.config.switchHeight : "150px";
+    var switchWidth = this.config.switchWidth ? this.config.switchWidth : "150px";
+    var switchHeight = this.config.switchHeight ? this.config.switchHeight : "380px";
 
     var color = this._getColorForLightEntity(stateObj, this.config.useTemperature, this.config.useBrightness);
     var sliderColor = "sliderColor" in this.config ? this.config.sliderColor : "#FFF";
@@ -93,8 +93,8 @@ class LightPopupCard extends LitElement {
                 <div class="icon${fullscreen === true ? ' fullscreen':''}">
                     <ha-icon style="${onStates.includes(stateObj.state) ? 'color:'+color+';' : ''}" icon="${icon}" />
                 </div>
-                ${ stateObj.attributes.supported_features > supportedFeaturesTreshold ? html`
-                    <h4 id="brightnessValue">${offStates.includes(stateObj.state) ? "Off" : stateObj.attributes.brightness + '%'}</h4>
+                ${ stateObj.attributes.supported_features & supportBrightness ? html`
+                    <h4 id="brightnessValue">${offStates.includes(stateObj.state) ? this.hass.localize(`component.light.state._.off`) : brightness + '%'}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
                         <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>

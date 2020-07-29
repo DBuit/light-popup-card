@@ -73,25 +73,33 @@ actions:
 The name option within a scene is **optional**
 
 
-Example configuration in lovelace-ui.yaml
+Example configuration in lovelace-ui.yaml with use of browser_mod (https://github.com/thomasloven/hass-browser_mod).
+To use the style part you also need to install card_mod (https://github.com/thomasloven/lovelace-card-mod)
 ```
 popup_cards:
   light.beganegrond:
     title: ""
     style:
-      position: fixed
-      z-index: 999
-      top: 0
-      left: 0
-      height: 100%
-      width: 100%
-      display: block
-      align-items: center
-      justify-content: center
-      background: rgba(0, 0, 0, 0.8)
-      flex-direction: column
-      margin: 0
-      "--iron-icon-fill-color": "#FFF"
+      $: |
+        .mdc-dialog .mdc-dialog__container {
+          width: 100%;
+        }
+        .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+          width:100%;
+        }
+      .: |
+        :host {
+          --mdc-theme-surface: rgba(0,0,0,0);
+          --secondary-background-color: rgba(0,0,0,0);
+          --ha-card-background: rgba(0,0,0,0);
+          --mdc-dialog-scrim-color: rgba(0,0,0,0.8);
+          --mdc-dialog-min-height: 100%;
+          --mdc-dialog-min-width: 100%;
+          --mdc-dialog-max-width: 100%;
+        }
+        mwc-icon-button {
+          color: #FFF;
+        }
     card:
       type: custom:light-popup-card
       entity: light.beganegrond
