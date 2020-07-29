@@ -3631,7 +3631,7 @@ class LightPopupCard extends LitElement {
         }
         var icon = this.config.icon ? this.config.icon : stateObj.attributes.icon ? stateObj.attributes.icon : 'mdi:lightbulb';
         var borderRadius = this.config.borderRadius ? this.config.borderRadius : '12px';
-        var supportedFeaturesTreshold = this.config.supportedFeaturesTreshold ? this.config.supportedFeaturesTreshold : 9;
+        var supportBrightness = 1;
         var onStates = this.config.onStates ? this.config.onStates : ['on'];
         var offStates = this.config.offStates ? this.config.offStates : ['off'];
         //Scenes
@@ -3688,7 +3688,7 @@ class LightPopupCard extends LitElement {
                 <div class="icon${fullscreen === true ? ' fullscreen' : ''}">
                     <ha-icon style="${onStates.includes(stateObj.state) ? 'color:' + color + ';' : ''}" icon="${icon}" />
                 </div>
-                ${stateObj.attributes.supported_features > supportedFeaturesTreshold ? html `
+                ${stateObj.attributes.supported_features & supportBrightness ? html `
                     <h4 id="brightnessValue" class="${offStates.includes(stateObj.state) ? '' : 'brightness'}" data-value="${this.currentBrightness}%">${offStates.includes(stateObj.state) ? b(this.hass.localize, stateObj, this.hass.language) : ''}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
                         <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:' + color + ';' : '--slider-color:' + sliderColor + ';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness / 2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
