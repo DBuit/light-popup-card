@@ -180,37 +180,6 @@ class LightPopupCard extends LitElement {
           }, 100);
         }
       });
-
-
-      // this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
-      //   var card = {
-      //     type: customCard.dataset.card
-      //   };
-      //   card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-      //   customCard.config = card;
-
-      //   let style = "";
-      //   if(customCard.dataset.style) {
-      //     style = customCard.dataset.style;
-      //   }
-
-      //   if(style != "") {
-      //     let itterations = 0;
-      //     let interval = setInterval(function () {
-      //       let el = customCard.children[0];
-      //       if(el) {
-      //         window.clearInterval(interval);
-
-      //         var styleElement = document.createElement('style');
-      //         styleElement.innerHTML = style;
-      //         el.shadowRoot.appendChild(styleElement);
-
-      //       } else if (++itterations === 10 ) {
-      //         window.clearInterval(interval);
-      //       }
-      //     }, 100);
-      //   }
-      // });
     }
   }
 
