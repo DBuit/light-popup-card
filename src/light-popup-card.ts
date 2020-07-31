@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
 import { closePopUp } from 'card-tools/src/popup';
+import { provideHass } from "card-tools/src/hass";
+import { createCard } from "card-tools/src/lovelace-element.js";
 import {
   computeStateDisplay
 } from 'custom-card-helpers';
@@ -133,21 +135,10 @@ class LightPopupCard extends LitElement {
             ${this.settings ? html`
               <div id="settings" class="settings-inner" @click="${e => this._close(e)}">
                 ${this.settingsCustomCard ? html`
-                  <card-maker nohass data-card="${this.config.settingsCard.type}" data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}" data-style="${this.config.settingsCard.cardStyle ? this.config.settingsCard.cardStyle : ''}">
-                  </card-maker>
+                  <div class="custom-card" data-card="${this.config.settingsCard.type}" data-options="${JSON.stringify(this.config.settingsCard.cardOptions)}" data-style="${this.config.settingsCard.cardStyle ? this.config.settingsCard.cardStyle : ''}">
+                  </div>
                 `:html`
-                    <more-info-controls
-                    .dialogElement=${null}
-                    .canConfigure=${false}
-                    .hass=${this.hass}
-                    .stateObj=${stateObj}
-                    style="--paper-slider-knob-color: white !important;
-                    --paper-slider-knob-start-color: white !important;
-                    --paper-slider-pin-color: white !important;
-                    --paper-slider-active-color: white !important;
-                    color: white !important;
-                    --primary-text-color: white !important;"
-                  ></more-info-controls>
+                    <p style="color:#F00;">Set settingsCustomCard to render a lovelace card here!</p>
                 `}
                 <button class="settings-btn ${this.settingsPosition}${fullscreen === true ? ' fullscreen':''}" @click="${() => this._closeSettings()}">${this.config.settings.closeButton ? this.config.settings.closeButton:'Close'}</button>
               </div>
@@ -163,35 +154,63 @@ class LightPopupCard extends LitElement {
     const mic = this.shadowRoot.querySelector("more-info-controls").shadowRoot;
     mic.removeChild(mic.querySelector("app-toolbar"));
     } else if(this.settings && this.settingsCustomCard) {
-      this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
+      this.shadowRoot.querySelectorAll(".custom-card").forEach(customCard => {
         var card = {
           type: customCard.dataset.card
         };
         card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
-        customCard.config = card;
-
+        const cardElement = createCard(card);
+        customCard.appendChild(cardElement);
+        provideHass(cardElement);
         let style = "";
         if(customCard.dataset.style) {
           style = customCard.dataset.style;
         }
-
-        if(style != "") {
+        if(style!= "") {
           let itterations = 0;
-          let interval = setInterval(function () {
-            let el = customCard.children[0];
-            if(el) {
-              window.clearInterval(interval);
-
-              var styleElement = document.createElement('style');
-              styleElement.innerHTML = style;
-              el.shadowRoot.appendChild(styleElement);
-
-            } else if (++itterations === 10 ) {
-              window.clearInterval(interval);
-            }
+          let interval = setInterval(function() {
+              if(cardElement && cardElement.shadowRoot) {
+                  window.clearInterval(interval);
+                  var styleElement = document.createElement('style');
+                  styleElement.innerHTML = style;
+                  cardElement.shadowRoot.appendChild(styleElement);
+              } else if(++itterations === 10) {
+                  window.clearInterval(interval);
+              }
           }, 100);
         }
-    });
+      });
+
+
+      // this.shadowRoot.querySelectorAll("card-maker").forEach(customCard => {
+      //   var card = {
+      //     type: customCard.dataset.card
+      //   };
+      //   card = Object.assign({}, card, JSON.parse(customCard.dataset.options));
+      //   customCard.config = card;
+
+      //   let style = "";
+      //   if(customCard.dataset.style) {
+      //     style = customCard.dataset.style;
+      //   }
+
+      //   if(style != "") {
+      //     let itterations = 0;
+      //     let interval = setInterval(function () {
+      //       let el = customCard.children[0];
+      //       if(el) {
+      //         window.clearInterval(interval);
+
+      //         var styleElement = document.createElement('style');
+      //         styleElement.innerHTML = style;
+      //         el.shadowRoot.appendChild(styleElement);
+
+      //       } else if (++itterations === 10 ) {
+      //         window.clearInterval(interval);
+      //       }
+      //     }, 100);
+      //   }
+      // });
     }
   }
 

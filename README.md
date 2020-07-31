@@ -135,7 +135,7 @@ popup_cards:
 ### Settings
 
 When settings added to your configuration this will display an extra button in the bottom right corner that when clicked
-switches the popup with the more-info content to give you extra controls.
+switches the popup with any other localace card rendered to give you extra controls.
 
 Default the button show the text `Settings` and when on the settings page it show an close button with the text `Close`.
 Both text can be overwritten as shown in configuration below
@@ -149,7 +149,6 @@ card:
     closeButton: Sluiten
 ```
 
-If you want the extra settings page but don't wanna show the more-info content you can also display any other lovelace card.
 First you enable the settings like above and then set a custom settingsCards by adding `settingsCard` to your configuration.
 Than you set the configuration for the card and overwrite the styles under de settingsCard. See configuration example below
 
