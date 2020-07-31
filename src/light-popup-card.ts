@@ -68,7 +68,8 @@ class LightPopupCard extends LitElement {
     var sliderColoredByLight = "sliderColoredByLight" in this.config ? this.config.sliderColoredByLight : false;
     var sliderThumbColor = "sliderThumbColor" in this.config ? this.config.sliderThumbColor : "#ddd";
     var sliderTrackColor = "sliderTrackColor" in this.config ? this.config.sliderTrackColor : "#ddd";
-    var actionRowCount = 0;    
+    var actionRowCount = 0;   
+    var displayType =  "displayType" in this.config ? this.config.displayType : "auto";
 
     this.settings = "settings" in this.config ? true : false;
     this.settingsCustomCard = "settingsCard" in this.config ? true : false;
@@ -93,7 +94,7 @@ class LightPopupCard extends LitElement {
                 <div class="icon${fullscreen === true ? ' fullscreen':''}">
                     <ha-icon style="${onStates.includes(stateObj.state) ? 'color:'+color+';' : ''}" icon="${icon}" />
                 </div>
-                ${ stateObj.attributes.supported_features & supportBrightness ? html`
+                ${ ((stateObj.attributes.supported_features & supportBrightness) && displayType == 'auto') || (displayType == 'slider') ? html`
                     <h4 id="brightnessValue">${offStates.includes(stateObj.state) ? this.hass.localize(`component.light.state._.off`) : brightness + '%'}</h4>
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
                         <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>

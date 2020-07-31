@@ -53,6 +53,7 @@ resources:
 | `sliderTrackColor` | string | optional | "#ddd" | The color of the slider track |
 | `settings` | boolean | optional | false | When it will add an settings button that displays the more-info content |
 | `settingsPosition` | string | optional | `bottom`  | set position of the settings button options: `top` or `bottom`. |
+| `displayType` | string | optional | `auto`  | set the type of the card to force display slider of switch options: `slider` or `switch`. |
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
 These actions are calling a service with specific service data. For people that used the `services:` before can still activate scenes look at the first example below.
