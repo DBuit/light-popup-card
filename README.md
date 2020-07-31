@@ -86,6 +86,7 @@ popup_cards:
         }
         .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
           width:100%;
+          box-shadow:none;
         }
       .: |
         :host {
