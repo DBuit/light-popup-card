@@ -489,7 +489,7 @@ class LightPopupCard extends LitElement {
         .switch-holder input[type="range"]::-webkit-slider-runnable-track {
             height: calc(var(--switch-width) - 20px);
             -webkit-appearance: none;
-            color: #var(--switch-track-color);
+            color: var(--switch-track-color);
             margin-top: -1px;
             transition: box-shadow 0.2s ease-in-out;
         }
@@ -498,7 +498,7 @@ class LightPopupCard extends LitElement {
             -webkit-appearance: none;
             height: calc(var(--switch-width) - 20px);
             cursor: ew-resize;
-            background: #var(--switch-color);
+            background: var(--switch-color);
             transition: box-shadow 0.2s ease-in-out;
             border: none;
             box-shadow: -1px 1px 20px 0px rgba(0,0,0,0.75);
