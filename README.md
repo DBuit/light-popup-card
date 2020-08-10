@@ -51,6 +51,8 @@ resources:
 | `sliderColoredByLight` | boolean | optional | false | Let the color of the slider change based on the light color, this overwrites the sliderColor setting |
 | `sliderThumbColor` | string | optional | "#ddd" | The color of the line that you use to slide the slider  |
 | `sliderTrackColor` | string | optional | "#ddd" | The color of the slider track |
+| `switchColor` | string | optional | "#FFF" | The color of the switch  |
+| `switchTrackColor` | string | optional | "#ddd" | The color of the switch track |
 | `settings` | boolean | optional | false | When it will add an settings button that displays the more-info content |
 | `settingsPosition` | string | optional | `bottom`  | set position of the settings button options: `top` or `bottom`. |
 | `displayType` | string | optional | `auto`  | set the type of the card to force display slider of switch options: `slider` or `switch`. |
