@@ -3854,7 +3854,7 @@ class LightPopupCard extends LitElement {
                         <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:' + color + ';' : '--slider-color:' + sliderColor + ';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness / 2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html `
-                    <h4>${b(this.hass.localize, stateObj, this.hass.language)}</h4>
+                    <h4 id="switchValue">${b(this.hass.localize, stateObj, this.hass.language)}</h4>
                     <div class="switch-holder" style="--switch-height: ${switchHeight};--switch-width: ${switchWidth};">
                         <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight}; --slider-border-radius: ${borderRadius}" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
                     </div>
