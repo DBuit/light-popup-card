@@ -70,6 +70,8 @@ class LightPopupCard extends LitElement {
     var sliderColoredByLight = "sliderColoredByLight" in this.config ? this.config.sliderColoredByLight : false;
     var sliderThumbColor = "sliderThumbColor" in this.config ? this.config.sliderThumbColor : "#ddd";
     var sliderTrackColor = "sliderTrackColor" in this.config ? this.config.sliderTrackColor : "#ddd";
+    var switchColor = "switchColor" in this.config ? this.config.switchColor : "#FFF";
+    var switchTrackColor = "switchTrackColor" in this.config ? this.config.switchTrackColor : "#ddd";
     var actionRowCount = 0;   
     var displayType =  "displayType" in this.config ? this.config.displayType : "auto";
 
@@ -104,7 +106,7 @@ class LightPopupCard extends LitElement {
                 ` : html`
                     <h4>${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
                     <div class="switch-holder" style="--switch-height: ${switchHeight};--switch-width: ${switchWidth};">
-                        <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight}; --slider-border-radius: ${borderRadius}" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
+                        <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight}; --slider-border-radius: ${borderRadius}; --switch-color: ${switchColor}; --switch-track-color: ${switchTrackColor};" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
                     </div>
                 `}
 
@@ -429,7 +431,7 @@ class LightPopupCard extends LitElement {
             -webkit-appearance: none;
             height: 80px;
             cursor: ew-resize;
-            background: #fff;
+            background: var(--slider-color);
             box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
             border-radius: 0;
             transition: box-shadow 0.2s ease-in-out;
@@ -450,7 +452,7 @@ class LightPopupCard extends LitElement {
             border-bottom:20px solid var(--slider-color);
             height: calc(var(--slider-width)*.4);
             cursor: ew-resize;
-            background: #fff;
+            background: var(--slider-color);
             box-shadow: -350px 0 0 350px var(--slider-color), inset 0 0 0 80px var(--slider-thumb-color);
             border-radius: 0;
             transition: box-shadow 0.2s ease-in-out;
@@ -478,7 +480,7 @@ class LightPopupCard extends LitElement {
             overflow: hidden;
             height: calc(var(--switch-width) - 20px);
             -webkit-appearance: none;
-            background-color: #ddd;
+            background-color: var(--switch-track-color);
             padding: 10px;
             position: absolute;
             top: calc(50% - (var(--switch-width) / 2));
@@ -487,7 +489,7 @@ class LightPopupCard extends LitElement {
         .switch-holder input[type="range"]::-webkit-slider-runnable-track {
             height: calc(var(--switch-width) - 20px);
             -webkit-appearance: none;
-            color: #ddd;
+            color: var(--switch-track-color);
             margin-top: -1px;
             transition: box-shadow 0.2s ease-in-out;
         }
@@ -496,7 +498,7 @@ class LightPopupCard extends LitElement {
             -webkit-appearance: none;
             height: calc(var(--switch-width) - 20px);
             cursor: ew-resize;
-            background: #fff;
+            background: var(--switch-color);
             transition: box-shadow 0.2s ease-in-out;
             border: none;
             box-shadow: -1px 1px 20px 0px rgba(0,0,0,0.75);
