@@ -129,7 +129,7 @@ class LightPopupCard extends LitElement {
                           actionCount++;
                           return html`
                             <div class="action" style="--size:${actionSize};" @click="${e => this._activateAction(e)}" data-service="${actionRowCount}#${actionCount}">
-                                <span class="color" style="background-color: ${action.color};border-color: ${action.color};--size:${actionSize};">${action.icon ? html`<ha-icon icon="${action.icon}" />`:html``}</span>
+                                <span class="color" style="background-color: ${action.color};border-color: ${action.color};--size:${actionSize};${action.image ? "background-size: contain;background-image:url('"+action.image+"')" : ""}">${action.icon ? html`<ha-icon icon="${action.icon}" />`:html``}</span>
                                 ${action.name ? html`<span class="name">${action.name}</span>`: html``}
                             </div>
                           `
