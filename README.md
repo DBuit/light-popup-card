@@ -37,6 +37,8 @@ resources:
 | `entity` | string | **Required** |  | Entity of the light |
 | `icon` | string | optional | `mdi:lightbulb` | It will use customize entity icon or from the config as a fallback it used lightbulb icon |
 | `fullscreen` | boolean | optional | true | If false it will remove the pop-up wrapper which makes it fullscreen |
+| `hideIcon` | boolean | optional | true | hide icon above slider or switch |
+| `hideState` | boolean | optional | true | hide state above slider or switch |
 | `offStates` | array | optional | - "off" | Array of states that will make the switch appear to be off |
 | `onStates` | array | optional | - "on" | Array of states that will make the switch appear to be on |
 | `actions` | object | optional | `actions:`  | define actions that you can activate from the pop-up. |
@@ -58,19 +60,31 @@ resources:
 | `displayType` | string | optional | `auto`  | set the type of the card to force display slider of switch options: `slider` or `switch`. |
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
-These actions are calling a service with specific service data. For people that used the `services:` before can still activate scenes look at the first example below.
+These actions are calling a service with specific service data. For people that used the `services:` before can still activate scenes look at the first example below. Besides a service call you can set the `action` parameter to `fire-dom-event` to open another popup for example
+
 ```
 actions:
-  - service: scene.turn_on
+  - action:call-service
+    service: scene.turn_on
     service_data:
       entity_id: scene.energie
     color: "#8BCBDD"
     name: energie
-  - service: homeassistant.toggle
+  - action:call-service
+    service: homeassistant.toggle
     service_data:
       entity_id: light.voordeurlicht
     name: voordeur
     icon: mdi:lightbulb
+  - action: fire-dom-event
+    name: test
+    browser_mod:
+      command: popup
+      title: 'My Title'
+      card:
+        type: 'custom:mini-graph-card'
+        entities:
+          - weather.weersverwachting
 ```
 The name option within a scene is **optional**
 
@@ -113,22 +127,26 @@ popup_cards:
       switchWidth: 150px
       switchHeight: 400px
       actions:
-        - service: scene.turn_on
+        - action:call-service
+          service: scene.turn_on
           service_data:
             entity_id: scene.ontspannen
           color: "#FDCA64"
           name: ontspannen
-        - service: scene.turn_on
+        - action:call-service 
+          service: scene.turn_on
           service_data:
             entity_id: scene.helder
           color: "#FFE7C0"
           name: helder
-        - service: scene.turn_on
+        - action:call-service
+          service: scene.turn_on
           service_data:
             entity_id: scene.concentreren
           color: "#BBEEF3"
           name: concentreren
-        - service: scene.turn_on
+        - action:call-service
+          service: scene.turn_on
           service_data:
             entity_id: scene.energie
           color: "#8BCBDD"

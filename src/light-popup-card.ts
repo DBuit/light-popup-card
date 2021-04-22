@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import tinycolor, { TinyColor, isReadable } from '@ctrl/tinycolor';
 import { closePopUp } from 'card-tools/src/popup';
+import { fireEvent } from "card-tools/src/event";
 import { provideHass } from "card-tools/src/hass";
 import { createCard } from "card-tools/src/lovelace-element.js";
 import {
@@ -75,6 +76,9 @@ class LightPopupCard extends LitElement {
     var actionRowCount = 0;   
     var displayType =  "displayType" in this.config ? this.config.displayType : "auto";
 
+    var hideIcon = "hideIcon" in this.config ? this.config.hideIcon : false;
+    var hideState = "hideState" in this.config ? this.config.hideState : false;
+
     this.settings = "settings" in this.config ? true : false;
     this.settingsCustomCard = "settingsCard" in this.config ? true : false;
     this.settingsPosition = "settingsPosition" in this.config ? this.config.settingsPosition : "bottom";
@@ -95,21 +99,24 @@ class LightPopupCard extends LitElement {
     return html`
       <div class="${fullscreen === true ? 'popup-wrapper':''}">
             <div id="popup" class="popup-inner" @click="${e => this._close(e)}">
+                ${hideIcon ? html`` : html`
                 <div class="icon${fullscreen === true ? ' fullscreen':''}">
                     <ha-icon style="${onStates.includes(stateObj.state) ? 'color:'+color+';' : ''}" icon="${icon}" />
                 </div>
+                `}
+                
                 ${ ((stateObj.attributes.supported_features & supportBrightness) && displayType == 'auto') || (displayType == 'slider') ? html`
-                    <h4 id="brightnessValue">${offStates.includes(stateObj.state) ? this.hass.localize(`component.light.state._.off`) : brightness + '%'}</h4>
+                    ${hideState ? html`` : html`<h4 id="brightnessValue">${offStates.includes(stateObj.state) ? this.hass.localize(`component.light.state._.off`) : brightness + '%'}</h4>`}
                     <div class="range-holder" style="--slider-height: ${brightnessHeight};--slider-width: ${brightnessWidth};">
                         <input type="range" style="--slider-width: ${brightnessWidth};--slider-height: ${brightnessHeight}; --slider-border-radius: ${borderRadius};${sliderColoredByLight ? '--slider-color:'+color+';':'--slider-color:'+sliderColor+';'}--slider-thumb-color:${sliderThumbColor};--slider-track-color:${sliderTrackColor};" .value="${offStates.includes(stateObj.state) ? 0 : Math.round(stateObj.attributes.brightness/2.55)}" @input=${e => this._previewBrightness(e.target.value)} @change=${e => this._setBrightness(stateObj, e.target.value)}>
                     </div>
                 ` : html`
-                    <h4 id="switchValue">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>
+                    ${hideState ? html`` : html`<h4 id="switchValue">${computeStateDisplay(this.hass.localize, stateObj, this.hass.language)}</h4>`}
                     <div class="switch-holder" style="--switch-height: ${switchHeight};--switch-width: ${switchWidth};">
                         <input type="range" style="--switch-width: ${switchWidth};--switch-height: ${switchHeight}; --slider-border-radius: ${borderRadius}; --switch-color: ${switchColor}; --switch-track-color: ${switchTrackColor};" value="0" min="0" max="1" .value="${switchValue}" @change=${() => this._switch(stateObj)}>
                     </div>
                 `}
-
+                
                 ${actions && actions.length > 0 ? html`
                 <div class="action-holder">
 
@@ -230,8 +237,19 @@ class LightPopupCard extends LitElement {
     if(e.target.dataset && e.target.dataset.service) {
       const [row, item] = e.target.dataset.service.split("#", 2);
       const action = this.actionRows[row-1][item-1];
-      const [domain, service] = action.service.split(".", 2);
-      this.hass.callService(domain, service, action.service_data);
+      if(!("action" in action)) {
+        action.action = 'call-service';
+      }
+
+      switch (action.action) {
+        case "call-service":
+          const [domain, service] = action.service.split(".", 2);
+          this.hass.callService(domain, service, action.service_data);
+          break;
+        case "fire-dom-event":
+          fireEvent("ll-custom", action);
+          break;
+      }
     }
   }
 
