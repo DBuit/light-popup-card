@@ -62,7 +62,7 @@ resources:
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
 These actions are calling a service with specific service data. For people that used the `services:` before can still activate scenes look at the first example below. Besides a service call you can set the `action` parameter to `fire-dom-event` to open another popup for example
 
-```
+```yaml
 actions:
   - action:call-service
     service: scene.turn_on
@@ -91,7 +91,7 @@ The name option within a scene is **optional**
 
 Example configuration in lovelace-ui.yaml with use of browser_mod (https://github.com/thomasloven/hass-browser_mod).
 To use the style part you also need to install card_mod (https://github.com/thomasloven/lovelace-card-mod)
-```
+```yaml
 popup_cards:
   light.beganegrond:
     title: ""
@@ -161,7 +161,7 @@ switches the popup with any other localace card rendered to give you extra contr
 Default the button show the text `Settings` and when on the settings page it show an close button with the text `Close`.
 Both text can be overwritten as shown in configuration below
 
-```
+```yaml
 card:
   type: custom:light-popup-card
   entity: light.beganegrond
@@ -173,7 +173,7 @@ card:
 First you enable the settings like above and then set a custom settingsCards by adding `settingsCard` to your configuration.
 Than you set the configuration for the card and overwrite the styles under de settingsCard. See configuration example below
 
-```
+```yaml
 card:
   type: custom:light-popup-card
   entity: light.beganegrond
@@ -192,7 +192,7 @@ card:
       background-color:#FFF;
 ```
 
-![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png)
-![Screenshot of card with switch](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-switch.png)
-![Screenshot of card with settings](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-settings.png)
-![Screenshot of card with settings opened](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-settings-page.png)
+![Screenshot of card](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot.png?raw=true)
+![Screenshot of card with switch](https://github.com/DBuit/hass-custom-light-popup-card/blob/development/screenshot-switch.png?raw=true)
+![Screenshot of card with settings](https://github.com/DBuit/hass-custom-light-popup-card/blob/master/screenshot-settings.png?raw=true)
+![Screenshot of card with settings opened](https://github.com/DBuit/hass-custom-light-popup-card/blob/master/screenshot-settings-page.png?raw=true)
