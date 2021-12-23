@@ -58,6 +58,8 @@ resources:
 | `settings` | boolean | optional | false | When it will add an settings button that displays the more-info content |
 | `settingsPosition` | string | optional | `bottom`  | set position of the settings button options: `top` or `bottom`. |
 | `displayType` | string | optional | `auto`  | set the type of the card to force display slider of switch options: `slider` or `switch`. |
+| `brightnessTransitionEnabled` | boolean | optional | `false`  | set to true to enable brightness transition. |
+| `brightnessTransitionTime` | string | optional | `0.5`  | set the duration the transition for the brightness should take default is 0.5 sec. |
 
 To show actions in the pop-up you add `actions:` in the config of the card follow bij multiple actions.
 These actions are calling a service with specific service data. For people that used the `services:` before can still activate scenes look at the first example below. Besides a service call you can set the `action` parameter to `fire-dom-event` to open another popup for example
