@@ -1,6 +1,5 @@
 import { LitElement, html, css } from "lit-element";
 import tinycolor, { TinyColor, isReadable } from "@ctrl/tinycolor";
-import { closePopUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
 import { provideHass } from "card-tools/src/hass";
 import { createCard } from "card-tools/src/lovelace-element.js";
@@ -367,7 +366,15 @@ class LightPopupCard extends LitElement {
       (event.target.className.includes("popup-inner") ||
         event.target.className.includes("settings-inner"))
     ) {
-      closePopUp();
+      const action = {
+          browser_mod: {
+              service: "browser_mod.close_popup",
+              data: {
+                browser_id: 'THIS'
+            }
+          }
+      }
+      fireEvent("ll-custom", action);
     }
   }
 
