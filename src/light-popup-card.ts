@@ -642,7 +642,7 @@ class LightPopupCard extends LitElement {
         -o-transform: rotate(270deg);
         -ms-transform: rotate(270deg);
         transform: rotate(270deg);
-        overflow: hidden;
+        overflow: auto;
         height: var(--slider-width);
         -webkit-appearance: none;
         background-color: var(--slider-track-color);
@@ -714,7 +714,7 @@ class LightPopupCard extends LitElement {
         -o-transform: rotate(270deg);
         -ms-transform: rotate(270deg);
         transform: rotate(270deg);
-        overflow: hidden;
+        overflow: auto;
         height: calc(var(--switch-width) - 20px);
         -webkit-appearance: none;
         background-color: var(--switch-track-color);
